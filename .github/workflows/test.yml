@@ -1,0 +1,24 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  smoke:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install (as the README says)
+        run: pip install -r requirements.txt pytest
+      - name: The sealed core and the report run end to end
+        run: python -m pytest -q tests
+      - name: Command line
+        run: python segment.py --help
