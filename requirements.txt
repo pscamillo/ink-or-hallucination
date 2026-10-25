@@ -1,0 +1,6 @@
+numpy
+scipy
+tifffile
+imagecodecs   # the model maps are LZW-compressed TIFFs
+pillow
+zarr
