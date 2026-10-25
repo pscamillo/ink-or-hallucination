@@ -55,7 +55,7 @@ pred = ('reverse' if grows_out else 'forward') if (decide_c and decide_o) else N
 rule = {'sagitta_vx': fl, 'normal_points': 'out' if out_n else 'in', 'slope_layers': b, 'ct_match_median_corr': cmed,
         'layers_grow_towards': 'outside' if grows_out else 'inside', 'prediction': pred,
         'ordem_camadas_win': oc_win, 'note': 'validated runs used --win 48' if oc_win != 48 else ''}
-json.dump(rule, open(f'{out}/order_rule.json', 'w'), indent=1)
+json.dump(rule, open(f'{out}/order_rule.json', 'w', encoding='utf-8'), indent=1)
 print('ORDER RULE (before any model):', rule, flush=True)
 if pred is None:
     print('the rule abstains on this mesh (too flat or CT match too weak). Falling back to the triangle with no order '
@@ -77,7 +77,7 @@ if pred is None:
     core = tri['core']; side = {c[-1] for c in core}
     pred = 'forward' if side == {'f'} and len(core) >= 3 else 'reverse' if side == {'r'} and len(core) >= 3 else None
     rule['triangle_fallback'] = {'core': core, 'verdict': tri['verdict'], 'order_from_triangle': pred}
-    json.dump(rule, open(f'{out}/order_rule.json', 'w'), indent=1)
+    json.dump(rule, open(f'{out}/order_rule.json', 'w', encoding='utf-8'), indent=1)
     print('TRIANGLE FALLBACK (no order fixed): core', core, '->', pred, flush=True)
     if pred is None:
         sys.exit('no layer order gives 3 agreeing models: the kit cannot say this segment shows ink; stopping here')

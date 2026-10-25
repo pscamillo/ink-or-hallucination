@@ -163,8 +163,10 @@ def run(seg_dir, models, order='forward', mask=None, win=None, px_um=None, win_m
             fh.write(overlay_png(good[m], npz, mask, D=D))
         log(f'   {m}: judged {j["judged"]}, NOT supported {j["unsupported"]}')
     R['seconds'] = round(time.time() - t0, 1)
-    json.dump(R, open(os.path.join(out_dir, 'report.json'), 'w'), indent=1, default=float)
-    open(os.path.join(out_dir, 'report.html'), 'w').write(to_html(R, out_dir))
+    with open(os.path.join(out_dir, 'report.json'), 'w', encoding='utf-8') as fh:
+        json.dump(R, fh, indent=1, default=float)
+    with open(os.path.join(out_dir, 'report.html'), 'w', encoding='utf-8') as fh:   # the report has µ, ≈, →
+        fh.write(to_html(R, out_dir))
     log(f'report: {os.path.join(out_dir, "report.html")}')
     return R
 

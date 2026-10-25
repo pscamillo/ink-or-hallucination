@@ -73,5 +73,5 @@ if R:
     with st.expander('Alignment between maps'):
         st.json(R['alignment'])
     with st.expander('What these checks can and cannot tell'):
-        st.markdown(open(os.path.join(HERE, 'LIMITS.md')).read() if os.path.exists(os.path.join(HERE, 'LIMITS.md')) else '')
+        st.markdown(open(os.path.join(HERE, 'LIMITS.md'), encoding='utf-8').read() if os.path.exists(os.path.join(HERE, 'LIMITS.md')) else '')
     st.download_button('Download report (HTML)', open(os.path.join(out, 'report.html'), 'rb'), 'inkcheck_report.html', 'text/html')
