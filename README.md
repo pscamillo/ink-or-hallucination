@@ -1,5 +1,7 @@
 # ink-or-hallucination
 
+[![test](https://github.com/pscamillo/ink-or-hallucination/actions/workflows/test.yml/badge.svg)](https://github.com/pscamillo/ink-or-hallucination/actions/workflows/test.yml)
+
 Label-free checks for 2.5D ink maps: does a map show ink, or something a model made up?
 
 You give it the same segment read by three independent ink models, each in both layer orders. It tells you whether
@@ -37,6 +39,8 @@ letters planted in Reader v2. Only that map goes up (1–2% → 13%), and its re
   than be trusted.
 - **Tested with the 9 µm koine models** (ink_9um, Reader v2, Reader V3). The layer-order rule's "reverse" case rests
   on one calibration segment plus symmetry.
+- **Tested on Linux with real data.** The checks and the report also pass on Windows and macOS (CI on synthetic
+  segments, every push); the end-to-end demo needs `vc_render_tifxyz` and a CUDA GPU.
 
 ## On a scroll with no labels
 
@@ -149,6 +153,8 @@ docs/              PREREG_*.md, RESULT_*.md and their sha256
 figures/           the README figures
 LICENSE            MIT
 requirements.txt   numpy scipy tifffile imagecodecs pillow zarr
+tests/             synthetic smoke tests (ink, texture only, one model inventing strokes)
+.github/           CI: the tests on Linux, Windows and macOS
 ```
 
 The run scripts in `scripts/` keep their original Portuguese comments and output, so their md5 still match the
