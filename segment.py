@@ -146,7 +146,7 @@ def run(seg_dir, models, order='forward', mask=None, win=None, px_um=None, win_m
             raise SystemExit(f'missing {m}.tif or {m}_reverse.tif in {seg_dir}')
         good[m], bad[m] = (f, r) if order == 'forward' else (r, f)
     if len(models) < 3:
-        raise SystemExit('need 3+ independent models (the triangle is the point)')
+        raise SystemExit('need 3+ models (the triangle is the point)')
     R = {'segment': os.path.abspath(seg_dir), 'models': models, 'order': order, 'win_px': win, 'mask': mask}
 
     log('1/3 alignment check'); R['alignment'] = alignment(good, mask)
@@ -231,7 +231,7 @@ def to_html(R, out_dir):
         return base64.b64encode(open(p, 'rb').read()).decode() if os.path.exists(p) else ''
     seg = html.escape(os.path.basename(R['segment'].rstrip('/')))
     st = overall(R)
-    head = {'good': ('Consistent with real ink', 'The independent models agree, in the right layer order, and almost every '
+    head = {'good': ('Consistent with real ink', 'The models agree, in the right layer order, and almost every '
                      'stroke is seen by more than one model.'),
             'warn': ('Look closer', 'Some checks raised a flag. Read the points below before trusting this map.'),
             'bad': ('Not supported', 'A large share of this map is not seen by the other models.'),
@@ -332,7 +332,7 @@ footer{{color:var(--soft);font-size:12.5px;border-top:1px solid var(--line);marg
 <span>no colour: not judged (no strokes above the other-order floor)</span></div>
 <div class="grid" id="grid">{cards}</div>
 <p class="note">An alarm means "the other models do not see this", not "this is fake". These checks measure agreement between
-independent models, so an ink pattern that every model shares passes. Real ink has depth and usually fades when the same model
+models, so an ink pattern that every model shares passes (and models trained on the same data share more). Real ink has depth and usually fades when the same model
 reads the layers in the other order; that depth measure is shown for information only, no threshold has been validated.
 Click a map to see it full screen.</p>
 <details><summary>Triangle: verdicts and pairwise agreement</summary><div class="tw">

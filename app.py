@@ -12,7 +12,7 @@ import segment as sg
 
 st.set_page_config(page_title='ink-or-hallucination', layout='wide')
 st.title('ink or hallucination?')
-st.caption('Label-free checks for 2.5D ink maps: do independent models see the same strokes, in the right layer order?')
+st.caption('Label-free checks for 2.5D ink maps: do several models see the same strokes, in the right layer order?')
 
 with st.sidebar:
     st.header('Segment')
@@ -28,7 +28,7 @@ with st.sidebar:
             st.success(f'{len(found)} models with both orders: {", ".join(found)}')
         else:
             st.warning('No NAME + NAME_reverse pairs found here.')
-    models = st.multiselect('Models (3 or more, independent)', found, default=found[:3])
+    models = st.multiselect('Models (3 or more; the less related, the stronger the check)', found, default=found[:3])
     order = st.radio('Which file is the right layer order?', ['forward', 'reverse'], horizontal=True,
                      help='forward = NAME.tif, reverse = NAME_reverse.tif. Use the layer-order rule '
                           '(scripts/curvatura.py + scripts/ordem_camadas.py) to decide, before looking at the maps.')

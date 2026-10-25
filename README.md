@@ -4,9 +4,11 @@
 
 Label-free checks for 2.5D ink maps: does a map show ink, or something a model made up?
 
-You give it the same segment read by three independent ink models, each in both layer orders. It tells you whether
-the models agree in the right order, and window by window where one map shows strokes the others do not. Every
-check was tested with a sealed pre-registration on public labelled segments before being trusted.
+New 9 µm ink models keep coming, each with cleaner-looking maps, and someone reviewing a claimed letter cannot tell
+from the map alone whether it is ink or something the model drew. This kit gives a label-free answer from what the
+models do: read the same segment with three models, each in both layer orders, and it tells you whether they agree
+in the right order, and window by window where one map shows strokes the others do not. Every check was tested with
+a sealed pre-registration on public labelled segments before being trusted.
 
 | clean map | the same map with invented letters |
 |---|---|
@@ -22,25 +24,29 @@ letters planted in Reader v2. Only that map goes up (1–2% → 13%), and its re
 | check | question | record (sealed, public data) |
 |---|---|---|
 | **layer order** | which way should the render's layers be stacked for the 9 µm models? (mesh + CT only, before running any model) | **60/60** (segment, model) pairs, 20 segments, 4 scrolls |
-| **triangle** | do 3+ independent models agree on this map beyond chance, in that order and not in the other? | **14/14** segments; never put a wrong-order map in the core, even with maps degraded to AUC 0.79 |
+| **triangle** | do 3+ models agree on this map beyond chance, in that order and not in the other? | **14/14** segments; never put a wrong-order map in the core, even with maps degraded to AUC 0.79 |
 | **windows** | where does one map show strokes the other models do not? | blind on PHercParis4: **2.7%** false alarm, **81/81** isolated invented letters, **26%** of invented letters inside real text |
 | **natural hallucinations** | does it flag the mistakes models make on their own? | where a model draws strokes and the label has no ink: flagged **28%** vs **1.6%** on real ink (18×, p ≈ 1e-87, blind) |
 | **depth** (informative) | does a stroke fade when the same model reads the layers in the other order? | real ink fades more than model-made strokes (AUC 0.76 blind; 0.65 on another set). Shown, not used for a verdict |
 
-## What it does not do
+## Scope and limits
 
 - **It measures agreement, not truth.** An ink pattern that every model shares passes.
+- **The three models are not independent.** All three are villa's hybrid 3D/2D network trained on the same 24
+  segments of four scrolls (PHerc0139, 0814, 1667, Paris4); Reader v2 has its own labels and was trained separately,
+  and Reader V3 is Reader v2 trained further. Their agreement rules out chance, not a pattern all three learned from
+  the same data. (Read from the checkpoints' own configs.)
+- **All labelled test segments are in the models' training data.** The stress test (maps degraded to AUC 0.79) is
+  the closest we can get to a new scroll. Below that the kit is untested, and it should say "unresolved" rather
+  than be trusted.
 - **Most invented letters sitting on real strokes are missed:** about 3 in 4.
 - **A model that draws differently from the others gets more alarms.** An alarm means "the other models do not see
   this", not "this is fake".
 - **The windowed score assumes pixel-aligned maps.** The report measures the shift between maps and warns.
-- **All labelled test segments are in the models' training data.** The stress test (maps degraded to AUC 0.79) is
-  the closest we can get to a new scroll. Below that the kit is untested, and it should say "unresolved" rather
-  than be trusted.
-- **Tested with the 9 µm koine models** (ink_9um, Reader v2, Reader V3). The layer-order rule's "reverse" case rests
-  on one calibration segment plus symmetry.
-- **Tested on Linux with real data.** The checks and the report also pass on Windows and macOS (CI on synthetic
-  segments, every push); the end-to-end demo needs `vc_render_tifxyz` and a CUDA GPU.
+- **Scope.** Tested with the 9 µm koine models (ink_9um, Reader v2, Reader V3); the layer-order rule's "reverse"
+  case rests on one calibration segment plus symmetry. Tested on Linux with real data; the checks and the report
+  also pass on Windows and macOS (CI on synthetic segments, every push); the end-to-end demo needs
+  `vc_render_tifxyz` and a CUDA GPU.
 
 ## On a scroll with no labels
 
@@ -118,7 +124,7 @@ failures included. Each fix went into a new pre-registration on data the check h
 
 | # | prereg | data | outcome |
 |---|---|---|---|
-| 1 | TRIANGULO | PHerc0139 w058 | triangle alone failed (mirror group) → led to the order rule |
+| 1 | TRIANGULO | PHerc1447 w058 | triangle alone failed (mirror group) → led to the order rule |
 | 2 | ORDEM | PHerc0139 ×5, 0814 ×1 | order 18/18 PASS; triangle 3/6 FAIL (null bug: NaN draws) |
 | 3 | V3 | PHerc1667 ×6 | order 18/18 PASS; triangle 6/6 PASS after the fix |
 | 4 | V4 | PHerc1667 ×6 | blind probes isolated 6/6; partial invented letters not caught at map level |
