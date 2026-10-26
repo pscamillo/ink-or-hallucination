@@ -2,6 +2,7 @@
 """End-to-end demo on an UNLABELLED segment of an eligible scroll, public data only:
   1) render the mesh into a 21-layer surface volume (vc_render_tifxyz, public CT), WITHOUT --flip-normals
   2) layer-order rule from geometry only (curvatura.py + ordem_camadas.py), written down BEFORE any model runs
+     if it abstains: the triangle's unique core, then the trio-strength tie-break (PREREG_HELDOUT2); else no verdict
   3) ink9 / Reader v2 / Reader V3 on the render, both layer orders (koine inference, as in the validation runs)
   4) segment.py report, with the order the rule chose
 Usage: python demo_unlabelled.py MESH_DIR CT_URL OUT_DIR
@@ -79,8 +80,14 @@ if pred is None:
     rule['triangle_fallback'] = {'core': core, 'verdict': tri['verdict'], 'order_from_triangle': pred}
     json.dump(rule, open(f'{out}/order_rule.json', 'w', encoding='utf-8'), indent=1)
     print('TRIANGLE FALLBACK (no order fixed): core', core, '->', pred, flush=True)
+    if pred is None:          # both orders agree internally ("mirror cores"): the stronger trio decides (PREREG_HELDOUT2)
+        ts = segment.trio_strength(tri)
+        pred = ts['order']; rule['trio_strength'] = ts
+        json.dump(rule, open(f'{out}/order_rule.json', 'w', encoding='utf-8'), indent=1)
+        print(f"TRIO STRENGTH: S_f {ts['S_forward']:.3f}  S_r {ts['S_reverse']:.3f}  ratio {ts['ratio']:.2f} "
+              f"(>= {ts['threshold']}?) -> {pred}", flush=True)
     if pred is None:
-        sys.exit('no layer order gives 3 agreeing models: the kit cannot say this segment shows ink; stopping here')
+        sys.exit('neither order is clearly stronger: the kit cannot say this segment shows ink; stopping here')
 
 # 4) report; pixel size from the mesh (grid step in voxels x voxel size / render px per grid point)
 vox = float(re.search(r'([0-9.]+)um', ct).group(1))

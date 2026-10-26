@@ -38,6 +38,25 @@ def run_triangle(maps, mask, core_from, n=300):
     return ik.check_triangle(a)
 
 
+TIE_RATIO = 1.25   # PREREG_HELDOUT2 (sealed before the run; set from the training triangles)
+
+
+def trio_strength(tri, threshold=TIE_RATIO):
+    """Layer order from a 6-map triangle (maps named <model>_f / <model>_r), as sealed in PREREG_HELDOUT2:
+    S_side = median of the 3 pairwise corr among that side's maps; ratio = max(S_f, S_r) / max(min(S_f, S_r), 1e-6);
+    the stronger side's order if ratio >= threshold, else None (no verdict). Used only when the order rule and the
+    unique-core fallback both abstain."""
+    S = {}
+    for sd in 'fr':
+        c3 = [v['corr'] for k, v in tri['pairs'].items() if all(n.endswith('_' + sd) for n in k.split(' x '))]
+        if len(c3) != 3:
+            raise ValueError(f'trio strength needs exactly 3 models per side, got {len(c3)} {sd}-side pairs')
+        S[sd] = float(np.median(c3))
+    ratio = max(S.values()) / max(min(S.values()), 1e-6)
+    order = ('forward' if S['f'] > S['r'] else 'reverse') if ratio >= threshold else None
+    return {'S_forward': S['f'], 'S_reverse': S['r'], 'ratio': ratio, 'threshold': threshold, 'order': order}
+
+
 def run_local(target, others, floor, mask, win, out_npz):
     ik.rng = np.random.default_rng(0)
     a = SimpleNamespace(target=target, others=others, floor=floor, mask=mask, win=win, out_npz=out_npz, **V12)
