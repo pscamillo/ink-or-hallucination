@@ -215,6 +215,13 @@ def summary(R):
             lines.append(('warn', txt + 'The other order keeps a lot of the same structure; check the layer order.'))
     else:
         lines.append(('warn', f'Triangle: core = {tri["core"]}. Check the layer order and the maps outside the core.'))
+    c_ot = float(np.nanmedian([pc(a, b) for i, a in enumerate(otn) for b in otn[i + 1:]]))
+    if c_ot >= 0.2:
+        lines.append(('note', f'Other order, among themselves: the maps read in the other order also agree with each other '
+                              f'(median corr {c_ot:.2f}; chosen order {c_in:.2f}, ratio {c_in / c_ot:.2f}), on a pattern that barely '
+                              f'matches the chosen-order maps. Two shared patterns are common because the models are related '
+                              f'(same architecture and training data). The chosen order is the stronger one by that ratio; '
+                              f'what the other-order pattern is (another sheet, texture, a shared model habit) the kit cannot say.'))
     bad_al = [m for m, a in R['alignment'].items() if not a['ok']]
     if bad_al:
         lines.append(('warn', 'Alignment: ' + ', '.join(f'{m} is shifted by ({R["alignment"][m]["dy_px"]}, {R["alignment"][m]["dx_px"]}) px'
@@ -240,7 +247,7 @@ def overall(R):
     other-order floor: there is nothing ink-like to check, which is an answer, not a failure."""
     if all(L['judged'] == 0 for L in R['local'].values()):
         return 'none'
-    kinds = [k for k, _ in summary(R)]
+    kinds = [k for k, _ in summary(R) if k != 'note']   # notes inform, they do not change the verdict
     return 'bad' if 'bad' in kinds else 'warn' if 'warn' in kinds else 'good'
 
 
@@ -306,7 +313,7 @@ h3{{font:600 19px/1.3 Georgia,serif;margin:30px 0 10px}}
 ul.points{{list-style:none;padding:0;margin:0;display:grid;gap:8px}}
 ul.points li{{display:flex;gap:10px;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 14px}}
 .dot{{flex:none;width:10px;height:10px;border-radius:50%;margin-top:7px}}
-li.good .dot{{background:var(--good)}} li.warn .dot{{background:var(--warn)}} li.bad .dot{{background:var(--bad)}}
+li.good .dot{{background:var(--good)}} li.warn .dot{{background:var(--warn)}} li.bad .dot{{background:var(--bad)}} li.note .dot{{background:#8a8378}}
 .legend{{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--soft);font-size:13px;margin:8px 0 14px}}
 .sw{{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px}}
 .grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}}

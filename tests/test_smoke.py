@@ -31,3 +31,15 @@ def test_strokes_only_one_model_draws_are_flagged_in_that_model(tmp_path):
     R = _run(tmp_path, ink=True, invent='m2')
     flagged = {m: R['local'][m]['unsupported'] for m in ('m1', 'm2', 'm3')}
     assert flagged['m2'] > max(flagged['m1'], flagged['m3'])
+
+
+def test_mirror_note_does_not_change_the_verdict(tmp_path):
+    R = _run(tmp_path, ink=True)
+    tri = R['triangle']
+    for k in list(tri['pairs']):                       # make the other-order maps agree strongly among themselves
+        a, b = k.split(' x ')
+        if a.endswith('_other') and b.endswith('_other'):
+            tri['pairs'][k]['corr'] = 0.6
+    lines = sg.summary(R)
+    assert any(k == 'note' and 'among themselves' in t for k, t in lines)
+    assert sg.overall(R) == 'good'
