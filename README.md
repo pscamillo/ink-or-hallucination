@@ -27,6 +27,7 @@ letters planted in Reader v2. Only that map goes up (1–2% → 13%), and its re
 | **triangle** | do 3+ models agree on this map beyond chance, in that order and not in the other? | **14/14** segments; never put a wrong-order map in the core, even with maps degraded to AUC 0.79 |
 | **windows** | where does one map show strokes the other models do not? | blind on PHercParis4: **2.7%** false alarm, **81/81** isolated invented letters, **26%** of invented letters inside real text |
 | **natural hallucinations** | does it flag the mistakes models make on their own? | where a model draws strokes and the label has no ink: flagged **28%** vs **1.6%** on real ink (18×, p ≈ 1e-87, blind) |
+| **scrolls no model saw** | does it still work off the models' training data? | PHerc0841 ×3: **abstained** (no verdict). Then, blind, with the tie-break sealed first: PHerc0500P2 + PHerc0009B, order **2/2** right, false alarm **5.6%**, invented letters **4/4** isolated and **29%** inside text; triangle **1/2 FAIL** |
 | **depth** (informative) | does a stroke fade when the same model reads the layers in the other order? | real ink fades more than model-made strokes (AUC 0.76 blind; 0.65 on another set). Shown, not used for a verdict |
 
 ## Scope and limits
@@ -36,9 +37,14 @@ letters planted in Reader v2. Only that map goes up (1–2% → 13%), and its re
   segments of four scrolls (PHerc0139, 0814, 1667, Paris4); Reader v2 has its own labels and was trained separately,
   and Reader V3 is Reader v2 trained further. Their agreement rules out chance, not a pattern all three learned from
   the same data. (Read from the checkpoints' own configs.)
-- **All labelled test segments are in the models' training data.** The stress test (maps degraded to AUC 0.79) is
-  the closest we can get to a new scroll. Below that the kit is untested, and it should say "unresolved" rather
-  than be trusted.
+- **Little data from scrolls the models never saw.** Most labelled tests ran on segments the models were trained
+  on. On PHerc0841, which none of them saw, the kit abstained on all three segments. A sealed tie-break (the stronger
+  of the two model trios fixes the order) then decided both labelled segments of PHerc0500P2 and PHerc0009B, right on
+  both. That is two segments: consistent with a rule that works, not an error rate. Both read forward; picking
+  **reverse** with the tie-break is untested. The labels of these scrolls may come from a model.
+- **Mirror patterns.** Read in the wrong order, the three related models often agree with each other on a different
+  pattern. The triangle's verdict on a wrong-order map is then not reliable (it failed on PHerc0009B); the report
+  shows that agreement as a grey note and does not use it for the verdict.
 - **Most invented letters sitting on real strokes are missed:** about 3 in 4.
 - **A model that draws differently from the others gets more alarms.** An alarm means "the other models do not see
   this", not "this is fake".
@@ -57,7 +63,7 @@ report says so instead of guessing:
 ![report, no ink signal](figures/report_noink.png)
 
 *"No ink signal here" is a result, not a failure: on this segment the kit cannot tell ink from what the models
-would draw anyway.*
+would draw anyway. (This run predates the tie-break and was not rerun.)*
 
 <details>
 <summary><b>Quick start</b></summary>
@@ -81,6 +87,17 @@ python scripts/ordem_camadas.py MESH_TIFXYZ RENDER.zarr CT.zarr/0 # which way th
 `demo_unlabelled.py` does everything on one mesh of an eligible scroll: render (`vc_render_tifxyz`, public CT),
 order rule, the three models in both orders, and the report.
 
+**With ink-sdk.** After an [ink-sdk](https://github.com/LimeGS/ink-sdk) battery, point the kit at its folder:
+
+```bash
+python from_battery.py BATTERY_DIR OUT_DIR --centre 0 --step 1 --models reader-v3 reader-v2 dense-native
+#   add maps from any other tool: --extra NAME=forward.npy,reverse.npy
+```
+
+It takes one cell per profile, puts every map on one grid and runs the same report. The order comes from
+`--order` or from the maps alone (triangle core, else the tie-break with exactly 3 models). The kit does not need
+ink-sdk installed, only its output folder; ink-sdk does not need the kit.
+
 As a library: `import inkcheck` (the sealed core: `check_triangle`, `check_local`, …) or `segment.run(...)`, which
 returns everything as a dict.
 </details>
@@ -95,6 +112,9 @@ returns everything as a dict.
   which way the layers grow.
 - The 9 µm models want outer → inner. The rule abstains if the sheet is too flat or the CT match is weak
   (median corr < 0.5).
+- If it abstains: the triangle's unique core of 3+ maps, all in one order, decides. If there is none (both orders
+  form a group), the **trio-strength tie-break** (PREREG_HELDOUT2): for each order, the median correlation of its
+  three maps; the stronger order wins if it is ≥ 1.25 × the other, else no verdict.
 
 **Triangle.**
 - Every pair of maps is correlated at stroke scale (2–20 px band) against a null that shuffles blocks inside the
@@ -134,9 +154,11 @@ failures included. Each fix went into a new pre-registration on data the check h
 | 8 | NATURAIS | PHercParis4 + 12 segments | natural hallucinations flagged 18× / 7.7× more than real ink: PASS, PASS |
 | 9 | DIRECAO | PHercParis4 + 12 segments | depth separates them: PASS (AUC 0.76) / FAIL (AUC 0.646) |
 | 10 | ESTRESSE | PHercParis4 ×3, noisy renders | fail-safe triangle 6/6 PASS; false alarm 4.1% / 3.5% PASS |
+| 11 | HELDOUT0841 | PHerc0841 ×3, no model trained on it | order rule abstained on all 3 (CT match < 0.5), triangle found no core: no verdict, every criterion NOT TESTABLE |
+| 12 | HELDOUT2 | PHerc0500P2 + PHerc0009B, blind | tie-break decided 2/2, both right: PASS; order 6/6 PASS; false alarm 5.6% PASS; invented letters 4/4 and 29% PASS; triangle 1/2 FAIL; natural hallucinations NOT TESTABLE (16 < 20 windows) |
 
-Every file and its sha256 is in `docs/`. Each pre-registration cites the sha256 of the one before it, and all 13
-links match the files in `docs/`. The natural-hallucination results (#8) are in `RESULT_V12.md`.
+Every file and its sha256 is in `docs/`. Up to #10, each pre-registration cites the sha256 of the one before it, and
+all 13 links match the files in `docs/`; #11 and #12 cite the earlier records by name. The natural-hallucination results (#8) are in `RESULT_V12.md`.
 
 Two gaps, stated plainly:
 - The `inkcheck.py` cores used in #1 (md5 149b7fd6, 5e43074c) were not kept. That test failed, and it only led to
@@ -153,13 +175,14 @@ inkcheck.py        sealed core (v12, md5 96c8d45f…): direction, label, witness
 segment.py         one command for a whole segment -> HTML/JSON report
 app.py             Streamlit front end
 demo_unlabelled.py end-to-end demo on an unlabelled mesh of an eligible scroll
+from_battery.py    the kit on an ink-sdk battery folder
 scripts/           order-rule tools and every sealed run script, byte-identical to what the preregs hash
 versions/          the cores the sealed runs used (v6, v7, v10 = inkcheck.py, v11, v12), byte-identical
 docs/              PREREG_*.md, RESULT_*.md and their sha256
 figures/           the README figures
 LICENSE            MIT
 requirements.txt   numpy scipy tifffile imagecodecs pillow zarr
-tests/             synthetic smoke tests (ink, texture only, one model inventing strokes)
+tests/             synthetic tests (ink, texture only, one model inventing strokes, tie-break, ink-sdk folder)
 .github/           CI: the tests on Linux, Windows and macOS
 ```
 
