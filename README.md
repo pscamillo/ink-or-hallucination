@@ -27,20 +27,22 @@ letters planted in Reader v2. Only that map goes up (1–2% → 13%), and its re
 | **triangle** | do 3+ models agree on this map beyond chance, in that order and not in the other? | **14/14** segments; never put a wrong-order map in the core, even with maps degraded to AUC 0.79 |
 | **windows** | where does one map show strokes the other models do not? | blind on PHercParis4: **2.7%** false alarm, **81/81** isolated invented letters, **26%** of invented letters inside real text |
 | **natural hallucinations** | does it flag the mistakes models make on their own? | where a model draws strokes and the label has no ink: flagged **28%** vs **1.6%** on real ink (18×, p ≈ 1e-87, blind) |
-| **scrolls no model saw** | does it still work off the models' training data? | PHerc0841 ×3: **abstained** (no verdict). Then, blind, with the tie-break sealed first: PHerc0500P2 + PHerc0009B, order **2/2** right, false alarm **5.6%**, invented letters **4/4** isolated and **29%** inside text; triangle **1/2 FAIL** |
+| **off the training data** | does it still work on segments the models were not trained on? | PHerc0841 ×3, a scroll no model saw: **abstained** (no verdict). Then, blind, with the tie-break sealed first: one held-out segment each of PHerc0500P2 + PHerc0009B, order **2/2** right, false alarm **5.6%**, invented letters **4/4** isolated and **29%** inside text; triangle **1/2 FAIL** |
 | **depth** (informative) | does a stroke fade when the same model reads the layers in the other order? | real ink fades more than model-made strokes (AUC 0.76 blind; 0.65 on another set). Shown, not used for a verdict |
 
 ## Scope and limits
 
 - **It measures agreement, not truth.** An ink pattern that every model shares passes.
-- **The three models are not independent.** All three are villa's hybrid 3D/2D network trained on the same 24
-  segments of four scrolls (PHerc0139, 0814, 1667, Paris4); Reader v2 has its own labels and was trained separately,
-  and Reader V3 is Reader v2 trained further. Their agreement rules out chance, not a pattern all three learned from
-  the same data. (Read from the checkpoints' own configs.)
-- **Little data from scrolls the models never saw.** Most labelled tests ran on segments the models were trained
-  on. On PHerc0841, which none of them saw, the kit abstained on all three segments. A sealed tie-break (the stronger
-  of the two model trios fixes the order) then decided both labelled segments of PHerc0500P2 and PHerc0009B, right on
-  both. That is two segments: consistent with a rule that works, not an error rate. Both read forward; picking
+- **The three models are not independent.** All three are villa's hybrid 3D/2D network with overlapping training
+  data; Reader v2 has its own labels and a larger set (it also trains on segments of PHerc0500P2, 0009B, 0343P and
+  0172), and Reader V3 is Reader v2 trained further. Their agreement rules out chance, not a pattern they learned
+  from the same data. (Read field by field from the checkpoints' own configs: `scripts/onde_treino.py`.)
+- **Little data off the training set.** Most labelled tests ran on segments the models were trained on. On
+  PHerc0841, a scroll none of them saw, the kit abstained on all three segments. A sealed tie-break (the stronger of
+  the two model trios fixes the order) then decided the labelled segments of PHerc0500P2 and PHerc0009B, right on
+  both. Those two segments are in no model's training data, but Reader v2 and V3 trained on other segments of both
+  scrolls (`docs/ERRATUM_HELDOUT2.md`; the prereg first said otherwise). Two segments: consistent with a rule that
+  works, not an error rate. Both read forward; picking
   **reverse** with the tie-break is untested. The labels of these scrolls may come from a model.
 - **Mirror patterns.** Read in the wrong order, the three related models often agree with each other on a different
   pattern. The triangle's verdict on a wrong-order map is then not reliable (it failed on PHerc0009B); the report
@@ -155,7 +157,7 @@ failures included. Each fix went into a new pre-registration on data the check h
 | 9 | DIRECAO | PHercParis4 + 12 segments | depth separates them: PASS (AUC 0.76) / FAIL (AUC 0.646) |
 | 10 | ESTRESSE | PHercParis4 ×3, noisy renders | fail-safe triangle 6/6 PASS; false alarm 4.1% / 3.5% PASS |
 | 11 | HELDOUT0841 | PHerc0841 ×3, no model trained on it | order rule abstained on all 3 (CT match < 0.5), triangle found no core: no verdict, every criterion NOT TESTABLE |
-| 12 | HELDOUT2 | PHerc0500P2 + PHerc0009B, blind | tie-break decided 2/2, both right: PASS; order 6/6 PASS; false alarm 5.6% PASS; invented letters 4/4 and 29% PASS; triangle 1/2 FAIL; natural hallucinations NOT TESTABLE (16 < 20 windows) |
+| 12 | HELDOUT2 | PHerc0500P2 + PHerc0009B, blind (held-out segments; Reader v2/V3 saw other segments of both, see ERRATUM_HELDOUT2) | tie-break decided 2/2, both right: PASS; order 6/6 PASS; false alarm 5.6% PASS; invented letters 4/4 and 29% PASS; triangle 1/2 FAIL; natural hallucinations NOT TESTABLE (16 < 20 windows) |
 
 Every file and its sha256 is in `docs/`. Up to #10, each pre-registration cites the sha256 of the one before it, and
 all 13 links match the files in `docs/`; #11 and #12 cite the earlier records by name. The natural-hallucination results (#8) are in `RESULT_V12.md`.
