@@ -24,7 +24,7 @@ letters planted in Reader v2. Only that map goes up (1–2% → 13%), and its re
 | check | question | record (sealed, public data) |
 |---|---|---|
 | **layer order** | which way should the render's layers be stacked for the 9 µm models? (mesh + CT only, before running any model) | **60/60** (segment, model) pairs, 20 segments, 4 scrolls |
-| **triangle** | do 3+ models agree on this map beyond chance, in that order and not in the other? | **14/14** segments; never put a wrong-order map in the core, even with maps degraded to AUC 0.79 |
+| **triangle** | do 3+ models agree on this map beyond chance, in that order and not in the other? the right-order maps agree beyond chance in **14/14** segments; a wrong-order map is flagged in only **8/14** (PHerc1667 6/6, PHercParis4 2/8): where the wrong order keeps some ink signal it agrees with the core, so that flag is not a reliable alarm (`docs/NOTE_2026-10-27_TRIANGLE_REREAD.md`) |
 | **windows** | where does one map show strokes the other models do not? | blind on PHercParis4: **2.7%** false alarm, **81/81** isolated invented letters, **26%** of invented letters inside real text |
 | **natural hallucinations** | does it flag the mistakes models make on their own? | where a model draws strokes and the label has no ink: flagged **28%** vs **1.6%** on real ink (18×, p ≈ 1e-87, blind) |
 | **off the training data** | does it still work on segments the models were not trained on? | PHerc0841 ×3, a scroll no model saw: **abstained** (no verdict). Then, blind, with the tie-break sealed first: one held-out segment each of PHerc0500P2 + PHerc0009B, order **2/2** right, false alarm **5.6%**, invented letters **4/4** isolated and **29%** inside text; triangle **1/2 FAIL**. PHerc1447 w060, a scroll no model saw, read **reversed**: order right, false alarm **1%**, and v8-in (another architecture) agrees |
@@ -47,8 +47,9 @@ letters planted in Reader v2. Only that map goes up (1–2% → 13%), and its re
   consistent with rules that work, not an error rate. Picking **reverse** with the tie-break is still
   untested (on PHerc1447 the geometry rule decided first). The labels of these scrolls may come from a model.
 - **Mirror patterns.** Read in the wrong order, the three related models often agree with each other on a different
-  pattern. The triangle's verdict on a wrong-order map is then not reliable (it failed on PHerc0009B); the report
-  shows that agreement as a grey note and does not use it for the verdict.
+  pattern. The triangle's verdict on a wrong-order map is then not reliable (it failed on PHerc0009B and, re-read,
+  on 6 of 8 PHercParis4 segments); the report shows that agreement as a grey note and does not use it for the
+  verdict. The order comes from the geometry rule or the tie-break, not from that verdict.
 - **Most invented letters sitting on real strokes are missed:** about 3 in 4.
 - **A model that draws differently from the others gets more alarms.** An alarm means "the other models do not see
   this", not "this is fake".
@@ -102,6 +103,14 @@ It takes one cell per profile, puts every map on one grid and runs the same repo
 `--order` or from the maps alone (triangle core, else the tie-break with exactly 3 models). The kit does not need
 ink-sdk installed, only its output folder; ink-sdk does not need the kit.
 
+![report on an ink-sdk battery, PHerc0841 w00](figures/report_inksdk_0841.png)
+
+*PHerc0841 w00, read by three ink-sdk profiles, then `from_battery.py`. The order was chosen from the maps alone
+(this scroll calibrated the tie-break, so this is an example, not evidence). seed43 sees almost nothing here, so each
+Reader is backed by one model only: 11% of their windows go unsupported and the kit says "Look closer" instead of
+"ink". The labels show the ink is real (AUC up to 0.91): an alarm means "the other models do not see this", not
+"this is fake".*
+
 As a library: `import inkcheck` (the sealed core: `check_triangle`, `check_local`, …) or `segment.run(...)`, which
 returns everything as a dict.
 </details>
@@ -152,18 +161,19 @@ failures included. Each fix went into a new pre-registration on data the check h
 | 2 | ORDEM | PHerc0139 ×5, 0814 ×1 | order 18/18 PASS; triangle 3/6 FAIL (null bug: NaN draws) |
 | 3 | V3 | PHerc1667 ×6 | order 18/18 PASS; triangle 6/6 PASS after the fix |
 | 4 | V4 | PHerc1667 ×6 | blind probes isolated 6/6; partial invented letters not caught at map level |
-| 5 | PARIS4 | PHercParis4 ×8 | order 24/24 PASS; triangle 8/8 PASS; windows v10 FAIL (null bug: +inf) |
+| 5 | PARIS4 | PHercParis4 ×8 | order 24/24 PASS; triangle 8/8 PASS as printed, **2/8 FAIL** re-read (a printing bug hid wrong-order maps that agree with the whole core; NOTE_2026-10-27_TRIANGLE_REREAD); windows v10 FAIL (null bug: +inf) |
 | 6 | V11 (+ addendum) | 12 segments | windows v11: false alarm 1/851 PASS; no-null 0.4% PASS; invented letters 10/19 FAIL |
 | 7 | V12 | PHercParis4 ×8 (blind) | windows v12: 4/4 PASS; v11 on the same data 3/3 PASS |
 | 8 | NATURAIS | PHercParis4 + 12 segments | natural hallucinations flagged 18× / 7.7× more than real ink: PASS, PASS |
 | 9 | DIRECAO | PHercParis4 + 12 segments | depth separates them: PASS (AUC 0.76) / FAIL (AUC 0.646) |
-| 10 | ESTRESSE | PHercParis4 ×3, noisy renders | fail-safe triangle 6/6 PASS; false alarm 4.1% / 3.5% PASS |
+| 10 | ESTRESSE | PHercParis4 ×3, noisy renders | fail-safe triangle 6/6 PASS, but it could not fail with the core fixed by the order (withdrawn, see the NOTE); false alarm 4.1% / 3.5% PASS |
 | 11 | HELDOUT0841 | PHerc0841 ×3, no model trained on it | order rule abstained on all 3 (CT match < 0.5), triangle found no core: no verdict, every criterion NOT TESTABLE |
 | 12 | HELDOUT2 | PHerc0500P2 + PHerc0009B, blind (held-out segments; Reader v2/V3 saw other segments of both, see ERRATUM_HELDOUT2) | tie-break decided 2/2, both right: PASS; order 6/6 PASS; false alarm 5.6% PASS; invented letters 4/4 and 29% PASS; triangle 1/2 FAIL; natural hallucinations NOT TESTABLE (16 < 20 windows) |
 | 13 | HELDOUT3 | PHerc1447 w060 (no model saw it, reads reversed) + w062 unlabelled | order rule decided reverse: PASS; v8-in witness agrees with the core: PASS; false alarm 1% PASS; invented letters 3/4 and 26% PASS; v8-in windows, triangle H2, natural hallucinations NOT TESTABLE |
 
 Every file and its sha256 is in `docs/`. Up to #10, each pre-registration cites the sha256 of the one before it, and
-all 13 links match the files in `docs/`; #11 to #13 cite the earlier records by name. The natural-hallucination results (#8) are in `RESULT_V12.md`.
+all 13 links match the files in `docs/`; #11 to #13 cite the earlier records by name. Dated notes (`ERRATUM_HELDOUT2`, `NOTE_2026-10-27_TRIANGLE_REREAD`)
+correct earlier files without editing them. The natural-hallucination results (#8) are in `RESULT_V12.md`.
 
 Two gaps, stated plainly:
 - The `inkcheck.py` cores used in #1 (md5 149b7fd6, 5e43074c) were not kept. That test failed, and it only led to
