@@ -43,22 +43,24 @@ letters planted in Reader v2. Only that map goes up (1–2% → 13%), and its re
   both. Those two segments are in no model's training data, but Reader v2 and V3 trained on other segments of both
   scrolls (`docs/ERRATUM_HELDOUT2.md`; the prereg first said otherwise). On PHerc1447 w060, which no model saw and
   which reads reversed, the geometry rule decided the order before any model ran, and was right; v8-in, a model of
-  another architecture that never saw PHerc1447, agreed with the kit's core. Three labelled segments in all:
-  consistent with rules that work, not an error rate. Picking **reverse** with the tie-break is still
-  untested (on PHerc1447 the geometry rule decided first). The labels of these scrolls may come from a model.
+  another architecture that never saw PHerc1447, agreed with the kit's core. Six labelled segments in all, the
+  order decided on three, all right: consistent with rules that work, not an error rate. (Rerun later with the
+  guarded tie-break, PHerc0841's three segments all come out forward, as the labels prefer; that scroll calibrated
+  the tie-break, so this is not evidence.) Picking **reverse** with the tie-break is still untested (on PHerc1447
+  the geometry rule decided first). The labels of these scrolls may come from a model.
 - **Mirror patterns.** Read in the wrong order, the three related models often agree with each other on a different
   pattern. The triangle's verdict on a wrong-order map is then not reliable (it failed on PHerc0009B and, re-read,
   on 6 of 8 PHercParis4 segments); the report shows that agreement as a grey note and does not use it for the
   verdict. The order comes from the geometry rule or the tie-break, not from that verdict.
-- **Most invented letters sitting on real strokes are missed:** two thirds to three quarters of them. A sealed attempt to fix this
-  (flagging the largest connected piece of unexplained strokes, v13) caught more of them but raised the false alarm
-  above 5% off the training data, and failed (`docs/RESULT_UCOMP.md`); the kit keeps v12.
+- **Most invented letters sitting on real strokes are missed:** two thirds to three quarters of them. A sealed
+  attempt to fix this (flagging the largest connected piece of unexplained strokes, v13) caught more of them but
+  raised the false alarm above 5% off the training data, and failed (`docs/RESULT_UCOMP.md`); the kit keeps v12.
 - **A model that draws differently from the others gets more alarms.** An alarm means "the other models do not see
   this", not "this is fake".
 - **The windowed score assumes pixel-aligned maps.** The report measures the shift between maps and warns.
 - **Scope.** Tested with the 9 µm koine models (ink_9um, Reader v2, Reader V3); the layer-order rule's "reverse"
-  case rests on one calibration segment plus symmetry. Tested on Linux with real data; the checks and the report
-  also pass on Windows and macOS (CI on synthetic segments, every push); the end-to-end demo needs
+  case rests on one calibration segment and one blind test (PHerc1447 w060). Tested on Linux with real data; the
+  checks and the report also pass on Windows and macOS (CI on synthetic segments, every push); the end-to-end demo needs
   `vc_render_tifxyz` and a CUDA GPU.
 
 ## Possible next steps
@@ -147,8 +149,9 @@ returns everything as a dict.
   (median corr < 0.5).
 - If it abstains: the triangle's unique core of 3+ maps, all in one order, decides. If there is none (both orders
   form a group), the **trio-strength tie-break** (PREREG_HELDOUT2): for each order, the median correlation of its
-  three maps; the stronger order wins if it is ≥ 1.25 × the other, else no verdict; also no verdict if the stronger trio does not all agree or a median is ≤ 0 (a guard added
-  after the seal, `docs/NOTE_2026-10-27_TIEBREAK_GUARD.md`).
+  three maps; the stronger order wins if it is ≥ 1.25 × the other, else no verdict. Also no verdict if the
+  stronger trio does not all agree or a median is ≤ 0 (a guard added after the seal,
+  `docs/NOTE_2026-10-27_TIEBREAK_GUARD.md`).
 
 **Triangle.**
 - Every pair of maps is correlated at stroke scale (2–20 px band) against a null that shuffles blocks inside the
@@ -194,8 +197,9 @@ failures included. Each fix went into a new pre-registration on data the check h
 | 14 | UCOMP | PHerc0841 ×3, 0500P2, 0009B, 1447 w060 (off the training data, new invented letters) | v13 (largest connected piece of unexplained strokes): letters inside text 39.6% vs v12 33.7%, needed +10 points: **FAIL**; false alarm 6.4% vs 4.6%, above 5%: **FAIL**; isolated letters 10/11 PASS. v12 stays |
 
 Every file and its sha256 is in `docs/`. Up to #10, each pre-registration cites the sha256 of the one before it, and
-all 13 links match the files in `docs/`; #11 to #14 cite the earlier records by name. Dated notes (`ERRATUM_HELDOUT2`, `NOTE_2026-10-27_TRIANGLE_REREAD`)
-correct earlier files without editing them. The natural-hallucination results (#8) are in `RESULT_V12.md`.
+all 13 links match the files in `docs/`; #11 to #14 cite the earlier records by name. Dated notes
+(`ERRATUM_HELDOUT2`, `NOTE_2026-10-27_TRIANGLE_REREAD`, `NOTE_2026-10-27_TIEBREAK_GUARD`) correct earlier files
+without editing them. The natural-hallucination results (#8) are in `RESULT_V12.md`.
 
 Two gaps, stated plainly:
 - The `inkcheck.py` cores used in #1 (md5 149b7fd6, 5e43074c) were not kept. That test failed, and it only led to
