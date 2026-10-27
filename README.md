@@ -50,7 +50,9 @@ letters planted in Reader v2. Only that map goes up (1–2% → 13%), and its re
   pattern. The triangle's verdict on a wrong-order map is then not reliable (it failed on PHerc0009B and, re-read,
   on 6 of 8 PHercParis4 segments); the report shows that agreement as a grey note and does not use it for the
   verdict. The order comes from the geometry rule or the tie-break, not from that verdict.
-- **Most invented letters sitting on real strokes are missed:** about 3 in 4.
+- **Most invented letters sitting on real strokes are missed:** two thirds to three quarters of them. A sealed attempt to fix this
+  (flagging the largest connected piece of unexplained strokes, v13) caught more of them but raised the false alarm
+  above 5% off the training data, and failed (`docs/RESULT_UCOMP.md`); the kit keeps v12.
 - **A model that draws differently from the others gets more alarms.** An alarm means "the other models do not see
   this", not "this is fake".
 - **The windowed score assumes pixel-aligned maps.** The report measures the shift between maps and warns.
@@ -171,9 +173,10 @@ failures included. Each fix went into a new pre-registration on data the check h
 | 11 | HELDOUT0841 | PHerc0841 ×3, no model trained on it | order rule abstained on all 3 (CT match < 0.5), triangle found no core: no verdict, every criterion NOT TESTABLE |
 | 12 | HELDOUT2 | PHerc0500P2 + PHerc0009B, blind (held-out segments; Reader v2/V3 saw other segments of both, see ERRATUM_HELDOUT2) | tie-break decided 2/2, both right: PASS; order 6/6 PASS; false alarm 5.6% PASS; invented letters 4/4 and 29% PASS; triangle 1/2 FAIL; natural hallucinations NOT TESTABLE (16 < 20 windows) |
 | 13 | HELDOUT3 | PHerc1447 w060 (no model saw it, reads reversed) + w062 unlabelled | order rule decided reverse: PASS; v8-in witness agrees with the core: PASS; false alarm 1% PASS; invented letters 3/4 and 26% PASS; v8-in windows, triangle H2, natural hallucinations NOT TESTABLE |
+| 14 | UCOMP | PHerc0841 ×3, 0500P2, 0009B, 1447 w060 (off the training data, new invented letters) | v13 (largest connected piece of unexplained strokes): letters inside text 39.6% vs v12 33.7%, needed +10 points: **FAIL**; false alarm 6.4% vs 4.6%, above 5%: **FAIL**; isolated letters 10/11 PASS. v12 stays |
 
 Every file and its sha256 is in `docs/`. Up to #10, each pre-registration cites the sha256 of the one before it, and
-all 13 links match the files in `docs/`; #11 to #13 cite the earlier records by name. Dated notes (`ERRATUM_HELDOUT2`, `NOTE_2026-10-27_TRIANGLE_REREAD`)
+all 13 links match the files in `docs/`; #11 to #14 cite the earlier records by name. Dated notes (`ERRATUM_HELDOUT2`, `NOTE_2026-10-27_TRIANGLE_REREAD`)
 correct earlier files without editing them. The natural-hallucination results (#8) are in `RESULT_V12.md`.
 
 Two gaps, stated plainly:
@@ -193,7 +196,7 @@ app.py             Streamlit front end
 demo_unlabelled.py end-to-end demo on an unlabelled mesh of an eligible scroll
 from_battery.py    the kit on an ink-sdk battery folder
 scripts/           order-rule tools and every sealed run script, byte-identical to what the preregs hash
-versions/          the cores the sealed runs used (v6, v7, v10 = inkcheck.py, v11, v12), byte-identical
+versions/          the cores the sealed runs used (v6, v7, v10 = inkcheck.py, v11, v12; v13 tested and not adopted), byte-identical
 docs/              PREREG_*.md, RESULT_*.md and their sha256
 figures/           the README figures
 LICENSE            MIT
