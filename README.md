@@ -38,6 +38,32 @@ a sealed result).*
 | **off the training data** | does it still work on segments the models were not trained on? | 6 labelled segments, 4 scrolls: the order was decided on **3 of 6**, all **3 right**; the kit abstained on the other 3 (PHerc0841, before the tie-break existed; that scroll then calibrated it). PHerc0500P2 + 0009B (held-out segments, blind): tie-break **2/2**, false alarm **5.6%**, invented-letter windows **4/4** isolated and **29%** on text, triangle on wrong-order maps **1/2 FAIL**. PHerc1447 w060 (no model saw it, reads **reversed**, blind): geometry rule right, false alarm **1%**, v8-in (another architecture) agrees |
 | **depth** (informative) | does a stroke fade when the same model reads the layers in the other order? | real ink fades more than model-made strokes (AUC 0.76 on one set; 0.646 on another, below the 0.65 bar: FAIL). Shown, not used for a verdict |
 
+## Use it in three steps
+
+1. **Maps in both layer orders.** For each model (three or more), two 2D ink maps of the same segment, pixel-aligned:
+   `NAME.tif` from the render as it is, and `NAME_reverse.tif` from the same render with its layers stacked the other
+   way (layer 0 ↔ last). Put them in one folder; `mask.npy` (valid area) is optional.
+2. **The layer order.** `segment.py` needs `--order forward` or `--order reverse`: which of the two stacks the models
+   should read. Take it from the geometry rule, before looking at any map (`scripts/curvatura.py` and
+   `scripts/ordem_camadas.py`, see Quick start; `demo_unlabelled.py` runs it for you). On an
+   [ink-sdk](https://github.com/LimeGS/ink-sdk) battery folder, `from_battery.py` can also choose it from the maps.
+3. **Run and read.** `python segment.py FOLDER --models A B C --px-um PIXEL_UM --order forward`, then open
+   `FOLDER/inkcheck_report/report.html` (plain Python on the CPU).
+
+| the report says | what to do |
+|---|---|
+| **Consistent with real ink** | the models agree in the right order and almost every stroke is backed by another model. Still agreement, not proof: read the letters with that in mind |
+| **Look closer** | read the flagged points: red windows show where one map draws strokes the others do not; also check the warnings on layer order, alignment and models with too few strokes |
+| **No ink signal / no verdict** | the kit cannot tell ink from what the models draw anyway here; do not use the map as evidence of ink |
+
+**Try it now**, on maps shipped in this repo (PHerc0211, a public mesh, no labels; about a minute on a CPU):
+
+```bash
+pip install -r requirements.txt
+python segment.py examples/PHerc0211_z5520_w020 --models ink9 rv2 rv3 --px-um 9.4 --order forward
+#   -> examples/PHerc0211_z5520_w020/inkcheck_report/report.html   ("Look closer", as in the PHerc0211 figure below)
+```
+
 ## Scope and limits
 
 - **It measures agreement, not truth.** An ink pattern every model shares passes.
@@ -290,6 +316,7 @@ scripts/           order-rule tools, every sealed run script (byte-identical to 
 versions/          the cores the sealed runs used (v6, v7, v10 = inkcheck.py, v11, v12; v13 tested and not adopted), byte-identical
 docs/              PREREG_*.md, RESULT_*.md and their sha256
 figures/           the README figures
+examples/          ready-to-run maps (PHerc0211, three models, both orders) and their source
 LICENSE            MIT
 requirements.txt   numpy scipy tifffile imagecodecs pillow zarr
 tests/             synthetic tests (ink, texture only, one model inventing strokes, tie-break, ink-sdk folder)

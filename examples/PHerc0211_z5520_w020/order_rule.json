@@ -1,0 +1,30 @@
+{
+ "sagitta_vx": -326.6,
+ "normal_points": "out",
+ "slope_layers": 1.0,
+ "ct_match_median_corr": 0.35,
+ "layers_grow_towards": "outside",
+ "prediction": null,
+ "ordem_camadas_win": 32,
+ "note": "validated runs used --win 48",
+ "triangle_fallback": {
+  "core": [],
+  "verdict": {
+   "ink9_f": "unresolved (2 different groups of 3 close; cannot tell which one is ink)",
+   "rv2_f": "unresolved (2 different groups of 3 close; cannot tell which one is ink)",
+   "rv3_f": "unresolved (2 different groups of 3 close; cannot tell which one is ink)",
+   "ink9_r": "unresolved (2 different groups of 3 close; cannot tell which one is ink)",
+   "rv2_r": "unresolved (2 different groups of 3 close; cannot tell which one is ink)",
+   "rv3_r": "unresolved (2 different groups of 3 close; cannot tell which one is ink)"
+  },
+  "order_from_triangle": null
+ },
+ "trio_strength": {
+  "S_forward": 0.2507130801677704,
+  "S_reverse": 0.19540901482105255,
+  "ratio": 1.28301696007916,
+  "threshold": 1.25,
+  "order": "forward",
+  "guard": null
+ }
+}
