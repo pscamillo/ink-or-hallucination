@@ -224,6 +224,10 @@ def summary(R):
     okn = [f'{m}_ok' for m in R['models']]; otn = [f'{m}_other' for m in R['models']]
     c_in = float(np.nanmedian([pc(a, b) for i, a in enumerate(okn) for b in okn[i + 1:]]))
     c_x = float(np.nanmedian([pc(a, b) for a in okn for b in otn]))
+    c_ot = float(np.nanmedian([pc(a, b) for i, a in enumerate(otn) for b in otn[i + 1:]]))
+    # review 2026-10-27: the chosen order comes from --order; if the other order's maps agree among themselves about
+    # as much or more, the chosen order is not supported by the maps (the tie-break's own bar, TIE_RATIO).
+    weaker = c_ot >= 0.2 and not c_in >= TIE_RATIO * c_ot
     if not tri['core']:
         lines.append(('warn', f'Triangle: unresolved: {next(iter(tri["verdict"].values()))}. No group of 3 models agrees.'))
     elif len(ok) == len(R['models']) and not other_ok:
@@ -231,19 +235,23 @@ def summary(R):
         how = 'strongly' if c_in >= 0.5 else 'moderately' if c_in >= 0.2 else 'weakly'
         txt = (f'Triangle: the {len(ok)} models agree {how} in the chosen layer order (median corr {c_in:.2f}); maps read in '
                f'the other order agree with them only weakly (median corr {max(0.0, c_x):.2f}, {rel:.0%} of that). ')
-        if rel < 0.2:
+        if rel < 0.2 and not weaker:
             lines.append(('good', txt + 'This is the pattern of real ink in the chosen order. (A small leftover in the other '
                                         'order is normal on segments the models were trained on.)'))
         else:
             lines.append(('warn', txt + 'The other order keeps a lot of the same structure; check the layer order.'))
     else:
         lines.append(('warn', f'Triangle: core = {tri["core"]}. Check the layer order and the maps outside the core.'))
-    c_ot = float(np.nanmedian([pc(a, b) for i, a in enumerate(otn) for b in otn[i + 1:]]))
-    if c_ot >= 0.2:
+    if weaker:
+        lines.append(('warn', f'Layer order: the maps read in the other order agree with each other '
+                              f'{"more strongly than" if c_ot > c_in else "about as much as"} the chosen ones (median corr '
+                              f'{c_ot:.2f} vs {c_in:.2f}, ratio {c_in / c_ot:.2f}; the tie-break needs {TIE_RATIO}). '
+                              f'The maps do not support the chosen order: check it with the layer-order rule.'))
+    elif c_ot >= 0.2:
         lines.append(('note', f'Other order, among themselves: the maps read in the other order also agree with each other '
                               f'(median corr {c_ot:.2f}; chosen order {c_in:.2f}, ratio {c_in / c_ot:.2f}), on a pattern that barely '
                               f'matches the chosen-order maps. Two shared patterns are common because the models are related '
-                              f'(same architecture and training data). The chosen order is the stronger one by that ratio; '
+                              f'(same architecture, overlapping training data). The chosen order is the stronger one by that ratio; '
                               f'what the other-order pattern is (another sheet, texture, a shared model habit) the kit cannot say.'))
     bad_al = [m for m, a in R['alignment'].items() if not a['ok']]
     if bad_al:
@@ -261,7 +269,7 @@ def summary(R):
         fr = L['unsupported'] / L['judged']
         kind = 'good' if fr <= 0.05 else 'warn' if fr <= 0.20 else 'bad'
         lines.append((kind, f'Windows, {m}: {L["unsupported"]} of {L["judged"]} windows with strokes are NOT supported by the '
-                            f'other models ({fr:.0%}). On the validation segments, good maps were at 0-3%.'))
+                            f'other models ({fr:.0%}). In the sealed tests, untouched maps were at 0-3% on training segments and 0-7% on held-out ones.'))
     return lines
 
 
@@ -406,8 +414,9 @@ lb.onclick=()=>lb.classList.remove('on');document.addEventListener('keydown',e=>
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('segment_dir'); ap.add_argument('--models', nargs='+', required=True)
-    ap.add_argument('--order', choices=['forward', 'reverse'], default='forward',
-                    help='which file holds the right layer order: NAME.tif (forward) or NAME_reverse.tif (reverse)')
+    ap.add_argument('--order', choices=['forward', 'reverse'], required=True,
+                    help='which file holds the right layer order: NAME.tif (forward) or NAME_reverse.tif (reverse); '
+                         'decide it with the layer-order rule, not by looking at the maps')
     ap.add_argument('--mask'); ap.add_argument('--win', type=int); ap.add_argument('--px-um', type=float)
     ap.add_argument('--win-mm', type=float, default=2.5); ap.add_argument('--out')
     a = ap.parse_args()

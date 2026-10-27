@@ -43,3 +43,16 @@ def test_mirror_note_does_not_change_the_verdict(tmp_path):
     lines = sg.summary(R)
     assert any(k == 'note' and 'among themselves' in t for k, t in lines)
     assert sg.overall(R) == 'good'
+
+
+def test_weaker_chosen_order_is_a_warning(tmp_path):
+    R = _run(tmp_path, ink=True)
+    tri = R['triangle']
+    for k in list(tri['pairs']):                       # the other order agrees among itself MORE than the chosen one
+        a, b = k.split(' x ')
+        if a.endswith('_other') and b.endswith('_other'):
+            tri['pairs'][k]['corr'] = 0.99
+    lines = sg.summary(R)
+    assert any(k == 'warn' and t.startswith('Layer order:') for k, t in lines)
+    assert not any(k == 'note' for k, _ in lines)
+    assert sg.overall(R) == 'warn'
