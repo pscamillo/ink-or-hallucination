@@ -275,5 +275,6 @@ pre-registrations.
 ---
 
 By Paulo Sergio Camillo. Models: `ink_9um` and the Reader models (Vesuvius Challenge / villa ink-detection).
+v8-in weights and the PHerc1447 surfaces and labels: Youssef Nader's public releases.
 Data: Vesuvius Challenge open data; meshes for the demo from
 [vesuvius-eligible-meshes](https://github.com/pscamillo/vesuvius-eligible-meshes). MIT license.
