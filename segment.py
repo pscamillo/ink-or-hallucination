@@ -174,6 +174,8 @@ def overlay_png(map_path, npz, mask, max_w=1600, D=None):
 
 def run(seg_dir, models, order='forward', mask=None, win=None, px_um=None, win_mm=2.5, out_dir=None, log=None):
     log = log or (lambda msg: print(msg, flush=True))
+    if order not in ('forward', 'reverse'):          # an undecided order must never fall through to one of them
+        raise SystemExit(f'order must be forward or reverse, got {order!r}: decide it first (layer-order rule)')
     t0 = time.time()
     out_dir = out_dir or os.path.join(seg_dir, 'inkcheck_report'); os.makedirs(out_dir, exist_ok=True)
     mask = mask or find(seg_dir, 'mask')

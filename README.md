@@ -92,7 +92,9 @@ report says so instead of guessing:
 ![report, no ink signal](figures/report_noink.png)
 
 *"No ink signal here" is a result, not a failure: on this segment the kit cannot tell ink from what the models
-would draw anyway. (This run predates the tie-break and was not rerun.)*
+would draw anyway. (This run predates the tie-break and was not rerun. With no order decided, that earlier demo
+still drew the report with the stored layers reversed, so its header reads "layer order checked: reverse"; neither
+order was supported. The current demo stops there instead.)*
 
 <details>
 <summary><b>Quick start</b></summary>
