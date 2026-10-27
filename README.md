@@ -61,6 +61,24 @@ letters planted in Reader v2. Only that map goes up (1–2% → 13%), and its re
   also pass on Windows and macOS (CI on synthetic segments, every push); the end-to-end demo needs
   `vc_render_tifxyz` and a CUDA GPU.
 
+## Possible next steps
+
+Directions, not promises: none of these is tested yet.
+
+- **Order from geometry alone.** Off the training data the CT match was too weak for the order rule on 5 of 6
+  labelled segments. The direction to the scroll's umbilicus also says which side of the sheet is outside, with no
+  CT match needed.
+- **A CT-texture check.** Score how much a map's strokes follow the papyrus texture in the CT. Models that agree
+  because they all trace fibres would then be caught, not counted as agreement on ink.
+- **A model of another family in the core.** On PHerc1447 w060, v8-in (another architecture) agreed with the villa
+  models' core. Requiring one such model in the core would rule out patterns the related villa models learned
+  together.
+- **Invented letters inside real text.** Flagging the largest connected piece of unexplained strokes caught more of
+  them but failed on false alarms, almost all from one model (`docs/RESULT_UCOMP.md`). A false-alarm control per
+  model is the obvious next try.
+- **Depth.** Real ink fades more than model-made strokes when the layer order is flipped on one test set (AUC 0.76)
+  but not on another (0.65); shown in the report, not used for a verdict.
+
 ## On a scroll with no labels
 
 `demo_unlabelled.py` on a public mesh of PHerc0800 (z5664, w020): the layer-order rule abstained (CT match 0.46,
