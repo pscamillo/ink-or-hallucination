@@ -21,6 +21,9 @@ push, and the real-data runs were on Linux. Only making the maps (running the in
 models as they came out. Bottom: the same segment with invented letters planted in Reader v2. Only that map goes up (1–2% → 13%), and its red windows land on the planted letters (an illustrative run, not
 a sealed result).*
 
+**See a full report in your browser** (no install): [PHerc0211, three models, no labels](https://pscamillo.github.io/ink-or-hallucination/example_report/), the same
+report the "Try it now" command below makes.
+
 <details>
 <summary><b>Close-up: the planted letters and the red windows</b></summary>
 
@@ -63,6 +66,8 @@ pip install -r requirements.txt
 python segment.py examples/PHerc0211_z5520_w020 --models ink9 rv2 rv3 --px-um 9.4 --order forward
 #   -> examples/PHerc0211_z5520_w020/inkcheck_report/report.html   ("Look closer", as in the PHerc0211 figure below)
 ```
+
+The report it makes is also [online](https://pscamillo.github.io/ink-or-hallucination/example_report/).
 
 ## Scope and limits
 
