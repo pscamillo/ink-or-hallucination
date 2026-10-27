@@ -6,7 +6,7 @@ Label-free checks for 2.5D ink maps: does a map show ink, or something a model m
 
 New 9 µm ink models keep coming, each with cleaner-looking maps, and someone reviewing a claimed letter cannot tell
 from the map alone whether it is ink or something the model drew. This kit gives a label-free answer from what the
-models do: read the same segment with three models, each in both layer orders, and it tells you whether they agree
+models do: read the same segment with three or more models (any models: the kit reads only their maps), each in both layer orders, and it tells you whether they agree
 in the right order, and window by window where one map shows strokes the others do not. Every core check (layer order,
 triangle, windows, tie-break) was tested with a sealed pre-registration on public labelled segments before being
 trusted; the report's summary bars (5% / 20%, 20 windows) are conveniences, not sealed rules.
@@ -60,7 +60,11 @@ a sealed result):*
 - **A model that draws differently from the others gets more alarms.** An alarm means "the other models do not see
   this", not "this is fake".
 - **The windowed score assumes pixel-aligned maps.** The report measures the shift between maps and warns.
-- **Scope.** Tested with the 9 µm koine models (ink_9um, Reader v2, Reader V3); the layer-order rule's "reverse"
+- **Any model.** The kit reads only the maps, so any model that gives a 2D ink map of the segment in both layer
+  orders can be added, by name or with `--extra` in `from_battery.py`, with no change to the kit. v8-in,
+  dense-native and the ink-sdk profiles have been run this way. The sealed tests used ink_9um, Reader v2 and Reader
+  V3, so the false-alarm ranges quoted are theirs; another model family can have its own normal rate.
+- **Scope.** Sealed tests with the 9 µm koine models (ink_9um, Reader v2, Reader V3); the layer-order rule's "reverse"
   case rests on one calibration segment and one blind test (PHerc1447 w060). Tested on Linux with real data; the
   checks and the report also pass on Windows and macOS (CI on synthetic segments, every push); the end-to-end demo needs
   `vc_render_tifxyz` and a CUDA GPU.
