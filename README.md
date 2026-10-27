@@ -15,9 +15,7 @@ Plain Python on the CPU (numpy, scipy): the checks and the report are tested on 
 push, and the real-data runs were on Linux. Only making the maps (running the ink models, as in
 `demo_unlabelled.py`) needs a CUDA GPU.
 
-| clean map | the same map with invented letters |
-|---|---|
-| ![report, clean map](figures/report_clean.png) | ![report, tampered map](figures/report_tampered.png) |
+![report on the clean map (left) and on the same map with invented letters (right)](figures/report_pair.png)
 
 *The HTML report on PHercParis4 w02. Left: the three models as they came out. Right: the same segment with invented
 letters planted in Reader v2. Only that map goes up (1–2% → 13%), and its red windows land on the planted letters (an illustrative run, not
@@ -105,7 +103,7 @@ before running: among the meshes judged good, the one whose ink_9um map changes 
 | PHerc0813 z13696_w020 | rule abstained (CT match 0.40); both orders equally strong (ratio 1.04) | **no verdict**: it stops before the report |
 | PHerc0125 z6944_w020 | rule abstained (CT match 0.15); tie-break: forward (1.34) | **Look closer**: the maps read in the other order agree with the chosen ones just as much (120%), so what the models share here does not depend on the order: texture more than ink |
 | PHerc0211 z5520_w020 | rule abstained (CT match 0.35); tie-break: forward (1.28) | **Look closer**: Reader v2/V3 strokes fade when the order flips, as ink does, but 8–9% of their windows are not backed by the other models and ink_9um sees almost nothing |
-| PHerc0800 z5664_w020 | rule abstained (CT match 0.46); no group of maps in one order (before the tie-break) | **No ink signal here** |
+| PHerc0800 z5664_w020 | rule abstained (CT match 0.46); tie-break: forward (1.28, just over the 1.25 bar) | **Look closer**: the maps read in the other order keep 57% of the agreement, so the order is weakly supported; ink_9um is shifted 4 px and has no window to judge, Reader v2 has 6; only Reader V3 can be judged (0 of 23 unsupported) |
 
 None of the five says "consistent with real ink". On scrolls the models were not trained on, that is the honest
 answer: the kit says what it can see and stops where it cannot. On w062 it gets closest, and what holds it back is
@@ -126,16 +124,13 @@ the sealed HELDOUT3 run made; w062 has no labels.*
 *PHerc0211 z5520_w020: two related models see something that depends on depth, the third sees nothing, and about
 one window in eleven is not backed by the others. "Look closer" is the right verdict for that.*
 
-`demo_unlabelled.py` on a public mesh of PHerc0800 (z5664, w020; an illustrative run): the layer-order rule abstained (CT match 0.46,
-below 0.5), and with the order unknown the triangle found no group of maps that agree in one order only. The
-report says so instead of guessing:
+![report on PHerc0800, no labels](figures/example_0800.png)
 
-![report, no ink signal](figures/report_noink.png)
-
-*"No ink signal here" is a result, not a failure: on this segment the kit cannot tell ink from what the models
-would draw anyway. (This run predates the tie-break and was not rerun. With no order decided, that earlier demo
-still drew the report with the stored layers reversed, so its header reads "layer order checked: reverse"; neither
-order was supported. The current demo stops there instead.)*
+*PHerc0800 z5664_w020, rerun with the current `demo_unlabelled.py` (it reused the earlier render and maps). The
+layer-order rule abstained (CT match 0.46); the guarded tie-break picked forward at 1.28, just over its 1.25 bar, and
+the report warns that the other order keeps much of the same structure. Two of the three models have too few strokes
+to judge. "Look closer" here means there is little to read, not that a map is fake. (The first run, before the
+tie-break, had stopped at "no ink signal here".)*
 
 </details>
 
