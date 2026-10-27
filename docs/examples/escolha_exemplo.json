@@ -1,0 +1,276 @@
+{
+ "rule": "Pick the mesh for the README's real example (a usage example, not evidence). The rule, written before looking:\n  - meshes of the public package judged 'aprova' in data/index.csv, PHerc0800 left out (already shown);\n  - for each, the published ink_9um maps in both layer orders (mapas_up/<scroll>/<z_w>.tif and _reverse.tif);\n  - order dependence = stroke energy (std of the 2-20 px band, 4x downsampled, on pixels valid in both) of the\n    stronger order / the weaker one; the mesh with the highest value is the example.\nIt uses one model only and never decides the layer order: the demo does that from geometry afterwards.\nuso: python escolhe_exemplo.py\n",
+ "n": 27,
+ "ranked": [
+  {
+   "scroll": "PHerc0813",
+   "mesh": "z13696_w020",
+   "path": "meshes/PHerc0813/z13696_w020",
+   "area_cm2": 1.78,
+   "energy_file": 12.11441421508789,
+   "energy_file_reverse": 19.44173240661621,
+   "ratio": 1.6048429632200059,
+   "stronger": "file_reverse"
+  },
+  {
+   "scroll": "PHerc0813",
+   "mesh": "z12496_w020",
+   "path": "meshes/PHerc0813/z12496_w020",
+   "area_cm2": 1.73,
+   "energy_file": 13.540199279785156,
+   "energy_file_reverse": 20.90450096130371,
+   "ratio": 1.5438842907218575,
+   "stronger": "file_reverse"
+  },
+  {
+   "scroll": "PHerc0813",
+   "mesh": "z11296_w020",
+   "path": "meshes/PHerc0813/z11296_w020",
+   "area_cm2": 1.72,
+   "energy_file": 11.331677436828613,
+   "energy_file_reverse": 16.96895408630371,
+   "ratio": 1.4974794491726018,
+   "stronger": "file_reverse"
+  },
+  {
+   "scroll": "PHerc0813",
+   "mesh": "z11904_w020",
+   "path": "meshes/PHerc0813/z11904_w020",
+   "area_cm2": 1.75,
+   "energy_file": 14.77902889251709,
+   "energy_file_reverse": 21.415019989013672,
+   "ratio": 1.4490140147067792,
+   "stronger": "file_reverse"
+  },
+  {
+   "scroll": "PHerc0813",
+   "mesh": "z13088_w020",
+   "path": "meshes/PHerc0813/z13088_w020",
+   "area_cm2": 1.73,
+   "energy_file": 13.023630142211914,
+   "energy_file_reverse": 18.00354766845703,
+   "ratio": 1.3823755336927386,
+   "stronger": "file_reverse"
+  },
+  {
+   "scroll": "PHerc0211",
+   "mesh": "z5520_w020",
+   "path": "meshes/PHerc0211/z5520_w020",
+   "area_cm2": 1.87,
+   "energy_file": 20.963306427001953,
+   "energy_file_reverse": 15.831313133239746,
+   "ratio": 1.3241672532512145,
+   "stronger": "file"
+  },
+  {
+   "scroll": "PHerc0211",
+   "mesh": "z10320_w020",
+   "path": "meshes/PHerc0211/z10320_w020",
+   "area_cm2": 2.25,
+   "energy_file": 20.511531829833984,
+   "energy_file_reverse": 15.516895294189453,
+   "ratio": 1.321883755799709,
+   "stronger": "file"
+  },
+  {
+   "scroll": "PHerc0211",
+   "mesh": "z11520_w020",
+   "path": "meshes/PHerc0211/z11520_w020",
+   "area_cm2": 1.97,
+   "energy_file": 22.413206100463867,
+   "energy_file_reverse": 17.79555892944336,
+   "ratio": 1.2594831210038844,
+   "stronger": "file"
+  },
+  {
+   "scroll": "PHerc0211",
+   "mesh": "z6112_w020",
+   "path": "meshes/PHerc0211/z6112_w020",
+   "area_cm2": 1.95,
+   "energy_file": 20.97086524963379,
+   "energy_file_reverse": 17.164936065673828,
+   "ratio": 1.2217269653320177,
+   "stronger": "file"
+  },
+  {
+   "scroll": "PHerc0211",
+   "mesh": "z6720_w020",
+   "path": "meshes/PHerc0211/z6720_w020",
+   "area_cm2": 1.96,
+   "energy_file": 21.624252319335938,
+   "energy_file_reverse": 18.061859130859375,
+   "ratio": 1.1972329184203456,
+   "stronger": "file"
+  },
+  {
+   "scroll": "PHerc0211",
+   "mesh": "z4912_w020",
+   "path": "meshes/PHerc0211/z4912_w020",
+   "area_cm2": 2.01,
+   "energy_file": 19.262174606323242,
+   "energy_file_reverse": 16.235902786254883,
+   "ratio": 1.1863938125221078,
+   "stronger": "file"
+  },
+  {
+   "scroll": "PHerc0211",
+   "mesh": "z7920_w020",
+   "path": "meshes/PHerc0211/z7920_w020",
+   "area_cm2": 1.85,
+   "energy_file": 21.96695327758789,
+   "energy_file_reverse": 18.797487258911133,
+   "ratio": 1.1686111539814579,
+   "stronger": "file"
+  },
+  {
+   "scroll": "PHerc0813",
+   "mesh": "z7104_w020",
+   "path": "meshes/PHerc0813/z7104_w020",
+   "area_cm2": 2.27,
+   "energy_file": 19.830934524536133,
+   "energy_file_reverse": 17.547718048095703,
+   "ratio": 1.1301147231897886,
+   "stronger": "file"
+  },
+  {
+   "scroll": "PHerc0813",
+   "mesh": "z8288_w020",
+   "path": "meshes/PHerc0813/z8288_w020",
+   "area_cm2": 1.78,
+   "energy_file": 22.473209381103516,
+   "energy_file_reverse": 19.991168975830078,
+   "ratio": 1.1241568418672414,
+   "stronger": "file"
+  },
+  {
+   "scroll": "PHerc0125",
+   "mesh": "z6944_w020",
+   "path": "meshes/PHerc0125/z6944_w020",
+   "area_cm2": 2.16,
+   "energy_file": 21.555673599243164,
+   "energy_file_reverse": 19.33453369140625,
+   "ratio": 1.1148794143829888,
+   "stronger": "file"
+  },
+  {
+   "scroll": "PHerc0125",
+   "mesh": "z16544_w020",
+   "path": "meshes/PHerc0125/z16544_w020",
+   "area_cm2": 2.54,
+   "energy_file": 18.93245506286621,
+   "energy_file_reverse": 17.12919807434082,
+   "ratio": 1.1052738710066428,
+   "stronger": "file"
+  },
+  {
+   "scroll": "PHerc0125",
+   "mesh": "z6336_w020",
+   "path": "meshes/PHerc0125/z6336_w020",
+   "area_cm2": 2.21,
+   "energy_file": 20.334314346313477,
+   "energy_file_reverse": 18.47901153564453,
+   "ratio": 1.100400543995019,
+   "stronger": "file"
+  },
+  {
+   "scroll": "PHerc0211",
+   "mesh": "z3712_w020",
+   "path": "meshes/PHerc0211/z3712_w020",
+   "area_cm2": 1.98,
+   "energy_file": 20.950040817260742,
+   "energy_file_reverse": 19.137290954589844,
+   "ratio": 1.0947234311780232,
+   "stronger": "file"
+  },
+  {
+   "scroll": "PHerc0125",
+   "mesh": "z8144_w020",
+   "path": "meshes/PHerc0125/z8144_w020",
+   "area_cm2": 2.3,
+   "energy_file": 19.069576263427734,
+   "energy_file_reverse": 17.78879165649414,
+   "ratio": 1.0719995282234933,
+   "stronger": "file"
+  },
+  {
+   "scroll": "PHerc0125",
+   "mesh": "z9936_w060",
+   "path": "meshes/PHerc0125/z9936_w060",
+   "area_cm2": 6.63,
+   "energy_file": 20.475854873657227,
+   "energy_file_reverse": 21.523191452026367,
+   "ratio": 1.0511498340280077,
+   "stronger": "file_reverse"
+  },
+  {
+   "scroll": "PHerc0125",
+   "mesh": "z14736_w020",
+   "path": "meshes/PHerc0125/z14736_w020",
+   "area_cm2": 2.44,
+   "energy_file": 19.09640884399414,
+   "energy_file_reverse": 18.285715103149414,
+   "ratio": 1.0443348119705254,
+   "stronger": "file"
+  },
+  {
+   "scroll": "PHerc0813",
+   "mesh": "z6496_w020",
+   "path": "meshes/PHerc0813/z6496_w020",
+   "area_cm2": 2.21,
+   "energy_file": 21.638919830322266,
+   "energy_file_reverse": 20.793794631958008,
+   "ratio": 1.0406431444247017,
+   "stronger": "file"
+  },
+  {
+   "scroll": "PHerc0813",
+   "mesh": "z14304_w100",
+   "path": "meshes/PHerc0813/z14304_w100",
+   "area_cm2": 9.58,
+   "energy_file": 20.33924102783203,
+   "energy_file_reverse": 21.14444923400879,
+   "ratio": 1.0395889013299424,
+   "stronger": "file_reverse"
+  },
+  {
+   "scroll": "PHerc0211",
+   "mesh": "z13920_w020",
+   "path": "meshes/PHerc0211/z13920_w020",
+   "area_cm2": 1.64,
+   "energy_file": 18.46050453186035,
+   "energy_file_reverse": 17.77174949645996,
+   "ratio": 1.0387556124138249,
+   "stronger": "file"
+  },
+  {
+   "scroll": "PHerc0813",
+   "mesh": "z7696_w020",
+   "path": "meshes/PHerc0813/z7696_w020",
+   "area_cm2": 1.81,
+   "energy_file": 24.06886100769043,
+   "energy_file_reverse": 23.348995208740234,
+   "ratio": 1.0308306971034338,
+   "stronger": "file"
+  },
+  {
+   "scroll": "PHerc0813",
+   "mesh": "z14896_w080",
+   "path": "meshes/PHerc0813/z14896_w080",
+   "area_cm2": 7.49,
+   "energy_file": 19.530759811401367,
+   "energy_file_reverse": 19.288881301879883,
+   "ratio": 1.0125397894121475,
+   "stronger": "file"
+  },
+  {
+   "scroll": "PHerc0211",
+   "mesh": "z9120_w020",
+   "path": "meshes/PHerc0211/z9120_w020",
+   "area_cm2": 2.09,
+   "energy_file": 20.723581314086914,
+   "energy_file_reverse": 20.760854721069336,
+   "ratio": 1.0017985987275801,
+   "stronger": "file_reverse"
+  }
+ ]
+}

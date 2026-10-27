@@ -83,7 +83,28 @@ Directions, not promises: none of these is tested yet.
 - **Depth.** Real ink fades more than model-made strokes when the layer order is flipped on one test set (AUC 0.76)
   but not on another (0.646, below the sealed 0.65 bar); shown in the report, not used for a verdict.
 
-## On a scroll with no labels
+## On scrolls with no labels
+
+Usage examples, not evidence: with no labels there is no right answer to score. Four segments of four scrolls, all
+from the public [mesh package](https://github.com/pscamillo/vesuvius-eligible-meshes), on scrolls that, as far as
+the checkpoints' own configs show (`scripts/onde_treino.py`), none of the three models was trained on. After PHerc0800, one mesh per scroll was picked by a rule written
+before running: among the meshes judged good, the one whose ink_9um map changes most when the layer order flips
+(`scripts/escolhe_exemplo.py`, ranking in `docs/examples/escolha_exemplo.json`). Then `demo_unlabelled.py`, unchanged.
+
+| scroll, mesh | layer order | what the kit says |
+|---|---|---|
+| PHerc0813 z13696_w020 | rule abstained (CT match 0.40); both orders equally strong (ratio 1.04) | **no verdict**: it stops before the report |
+| PHerc0125 z6944_w020 | rule abstained (CT match 0.15); tie-break: forward (1.34) | **Look closer**: the maps read in the other order agree with the chosen ones just as much (120%), so what the models share here does not depend on the order: texture more than ink |
+| PHerc0211 z5520_w020 | rule abstained (CT match 0.35); tie-break: forward (1.28) | **Look closer**: Reader v2/V3 strokes fade when the order flips, as ink does, but 8–9% of their windows are not backed by the other models and ink_9um sees almost nothing |
+| PHerc0800 z5664_w020 | rule abstained (CT match 0.46); no group of maps in one order (before the tie-break) | **No ink signal here** |
+
+None of the four says "consistent with real ink". On scrolls the models were not trained on, that is the honest
+answer: the kit says what it can see and stops where it cannot.
+
+![report on PHerc0211, no labels](figures/example_0211.png)
+
+*PHerc0211 z5520_w020: two related models see something that depends on depth, the third sees nothing, and about
+one window in eleven is not backed by the others. "Look closer" is the right verdict for that.*
 
 `demo_unlabelled.py` on a public mesh of PHerc0800 (z5664, w020; an illustrative run): the layer-order rule abstained (CT match 0.46,
 below 0.5), and with the order unknown the triangle found no group of maps that agree in one order only. The
