@@ -15,10 +15,10 @@ Plain Python on the CPU (numpy, scipy): the checks and the report are tested on 
 push, and the real-data runs were on Linux. Only making the maps (running the ink models, as in
 `demo_unlabelled.py`) needs a CUDA GPU.
 
-![report on the clean map (left) and on the same map with invented letters (right)](figures/report_pair.png)
+![report on the clean map (top) and on the same map with invented letters (bottom)](figures/report_pair.png)
 
-*The HTML report on PHercParis4 w02. Left: the three models as they came out. Right: the same segment with invented
-letters planted in Reader v2. Only that map goes up (1–2% → 13%), and its red windows land on the planted letters (an illustrative run, not
+*The HTML report on PHercParis4 w02 (verdict and window cards; the written checks are trimmed). Top: the three
+models as they came out. Bottom: the same segment with invented letters planted in Reader v2. Only that map goes up (1–2% → 13%), and its red windows land on the planted letters (an illustrative run, not
 a sealed result).*
 
 <details>
