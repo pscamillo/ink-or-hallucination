@@ -11,6 +11,10 @@ in the right order, and window by window where one map shows strokes the others 
 triangle, windows, tie-break) was tested with a sealed pre-registration on public labelled segments before being
 trusted; the report's summary bars (5% / 20%, 20 windows) are conveniences, not sealed rules.
 
+Plain Python on the CPU (numpy, scipy): the checks and the report are tested on Linux, Windows and macOS on every
+push, and the real-data runs were on Linux. Only making the maps (running the ink models, as in
+`demo_unlabelled.py`) needs a CUDA GPU.
+
 | clean map | the same map with invented letters |
 |---|---|
 | ![report, clean map](figures/report_clean.png) | ![report, tampered map](figures/report_tampered.png) |
