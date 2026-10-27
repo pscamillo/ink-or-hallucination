@@ -276,5 +276,6 @@ pre-registrations.
 
 By Paulo Sergio Camillo. Models: `ink_9um` and the Reader models (Vesuvius Challenge / villa ink-detection).
 v8-in weights and the PHerc1447 surfaces and labels: Youssef Nader's public releases.
+[ink-sdk](https://github.com/LimeGS/ink-sdk), which `from_battery.py` reads: Leonel Wainer (LimeGS) and Paulo Sergio Camillo.
 Data: Vesuvius Challenge open data; meshes for the demo from
 [vesuvius-eligible-meshes](https://github.com/pscamillo/vesuvius-eligible-meshes). MIT license.
