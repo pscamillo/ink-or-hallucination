@@ -21,9 +21,13 @@ push, and the real-data runs were on Linux. Only making the maps (running the in
 
 *The HTML report on PHercParis4 w02. Left: the three models as they came out. Right: the same segment with invented
 letters planted in Reader v2. Only that map goes up (1–2% → 13%), and its red windows land on the planted letters (an illustrative run, not
-a sealed result):*
+a sealed result).*
+
+<details>
+<summary><b>Close-up: the planted letters and the red windows</b></summary>
 
 ![overview](figures/overview.png)
+</details>
 
 ## What it checks, and how well
 
@@ -37,6 +41,17 @@ a sealed result):*
 | **depth** (informative) | does a stroke fade when the same model reads the layers in the other order? | real ink fades more than model-made strokes (AUC 0.76 on one set; 0.646 on another, below the 0.65 bar: FAIL). Shown, not used for a verdict |
 
 ## Scope and limits
+
+- **It measures agreement, not truth.** An ink pattern every model shares passes.
+- **The validated models are related** (villa's network, overlapping training data): their agreement rules out
+  chance, not a habit they learned together.
+- **Little labelled data off the training set:** 6 segments; the order was decided on 3, all right.
+- **Most invented letters sitting on real text are missed** (two thirds to three quarters of such windows).
+- **An alarm means "the other models do not see this"**, not "this is fake".
+- **Any model can be added** (the kit reads only maps); the sealed false-alarm ranges are the villa models'.
+
+<details>
+<summary><b>Limits in detail</b></summary>
 
 - **It measures agreement, not truth.** An ink pattern that every model shares passes.
 - **The three models are not independent.** All three are villa's hybrid 3D/2D network with overlapping training
@@ -73,6 +88,8 @@ a sealed result):*
   checks and the report also pass on Windows and macOS (CI on synthetic segments, every push); the end-to-end demo needs
   `vc_render_tifxyz` and a CUDA GPU.
 
+</details>
+
 ## On scrolls with no labels
 
 Usage examples, not evidence: with no labels there is no right answer to score. Five segments of five scrolls that,
@@ -101,6 +118,9 @@ with the three villa models (9× to 20× the block-shuffle null maximum). With v
 fully backed; with the three villa maps only (RESULT_HELDOUT3) they were at 4.3% and 5.3%. These maps are the ones
 the sealed HELDOUT3 run made; w062 has no labels.*
 
+<details>
+<summary><b>Two more example reports (PHerc0211, PHerc0800)</b></summary>
+
 ![report on PHerc0211, no labels](figures/example_0211.png)
 
 *PHerc0211 z5520_w020: two related models see something that depends on depth, the third sees nothing, and about
@@ -117,7 +137,10 @@ would draw anyway. (This run predates the tie-break and was not rerun. With no o
 still drew the report with the stored layers reversed, so its header reads "layer order checked: reverse"; neither
 order was supported. The current demo stops there instead.)*
 
-## Possible next steps
+</details>
+
+<details>
+<summary><b>Possible next steps</b></summary>
 
 Directions, not promises: none of these is tested yet.
 
@@ -134,6 +157,8 @@ Directions, not promises: none of these is tested yet.
   model is the obvious next try.
 - **Depth.** Real ink fades more than model-made strokes when the layer order is flipped on one test set (AUC 0.76)
   but not on another (0.646, below the sealed 0.65 bar); shown in the report, not used for a verdict.
+
+</details>
 
 <details>
 <summary><b>Quick start</b></summary>
