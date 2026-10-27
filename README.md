@@ -127,7 +127,8 @@ returns everything as a dict.
   (median corr < 0.5).
 - If it abstains: the triangle's unique core of 3+ maps, all in one order, decides. If there is none (both orders
   form a group), the **trio-strength tie-break** (PREREG_HELDOUT2): for each order, the median correlation of its
-  three maps; the stronger order wins if it is ≥ 1.25 × the other, else no verdict.
+  three maps; the stronger order wins if it is ≥ 1.25 × the other, else no verdict; also no verdict if the stronger trio does not all agree or a median is ≤ 0 (a guard added
+  after the seal, `docs/NOTE_2026-10-27_TIEBREAK_GUARD.md`).
 
 **Triangle.**
 - Every pair of maps is correlated at stroke scale (2–20 px band) against a null that shuffles blocks inside the

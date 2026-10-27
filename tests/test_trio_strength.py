@@ -10,14 +10,15 @@ sys.path.insert(0, os.path.dirname(HERE))
 import segment as sg
 
 
-def _tri(f, r, cross=0.1):
+def _tri(f, r, cross=0.1, agree=True):
     names = [f'{m}_{s}' for m in ('a', 'b', 'c') for s in 'fr']
     pairs = {}
     for i, x in enumerate(names):
         for y in names[i + 1:]:
             same = x[-1] == y[-1]
-            pairs[f'{x} x {y}'] = {'corr': (f if x[-1] == 'f' else r) if same else cross}
-    return {'pairs': pairs}
+            c = (f if x[-1] == 'f' else r) if same else cross
+            pairs[f'{x} x {y}'] = {'corr': c, 'p': 0.001 if agree else 0.5, 'null_max': 0.05}
+    return {'pairs': pairs, 'alpha': 0.01, 'min_ratio': 2.0}
 
 
 def test_stronger_forward_trio_decides():
@@ -38,3 +39,13 @@ def test_needs_three_models_per_side():
     t['pairs'] = {k: v for k, v in t['pairs'].items() if 'c_' not in k}
     with pytest.raises(ValueError):
         sg.trio_strength(t)
+
+
+def test_guard_trio_that_does_not_agree():
+    t = sg.trio_strength(_tri(0.4, 0.2, agree=False))
+    assert t['order'] is None and t['guard'] == 'stronger trio does not all agree'
+
+
+def test_guard_nonpositive_weaker_trio():
+    t = sg.trio_strength(_tri(0.4, -0.05))
+    assert t['order'] is None and t['guard'] == 'weaker trio median corr <= 0'

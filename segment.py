@@ -41,11 +41,22 @@ def run_triangle(maps, mask, core_from, n=300):
 TIE_RATIO = 1.25   # PREREG_HELDOUT2 (sealed before the run; set from the training triangles)
 
 
+def _agrees(v, a, mr):
+    """A saved triangle pair agrees: p < alpha and corr >= min_ratio x null_max (missing or NaN values: no)."""
+    try:
+        return bool(v) and float(v['p']) < a and float(v['corr']) >= mr * float(v['null_max'])
+    except (KeyError, TypeError, ValueError):
+        return False
+
+
 def trio_strength(tri, threshold=TIE_RATIO):
     """Layer order from a 6-map triangle (maps named <model>_f / <model>_r), as sealed in PREREG_HELDOUT2:
     S_side = median of the 3 pairwise corr among that side's maps; ratio = max(S_f, S_r) / max(min(S_f, S_r), 1e-6);
     the stronger side's order if ratio >= threshold, else None (no verdict). Used only when the order rule and the
-    unique-core fallback both abstain."""
+    unique-core fallback both abstain.
+    Safety guard added after the seal (docs/NOTE_2026-10-27_TIEBREAK_GUARD.md): no verdict either if min(S) <= 0
+    (the ratio is then meaningless) or if the stronger side's 3 maps do not all agree pairwise (p < alpha and
+    corr >= min_ratio x null_max): a trio that does not agree cannot fix the order."""
     S = {}
     for sd in 'fr':
         c3 = [v['corr'] for k, v in tri['pairs'].items() if all(n.endswith('_' + sd) for n in k.split(' x '))]
@@ -54,7 +65,19 @@ def trio_strength(tri, threshold=TIE_RATIO):
         S[sd] = float(np.median(c3))
     ratio = max(S.values()) / max(min(S.values()), 1e-6)
     order = ('forward' if S['f'] > S['r'] else 'reverse') if ratio >= threshold else None
-    return {'S_forward': S['f'], 'S_reverse': S['r'], 'ratio': ratio, 'threshold': threshold, 'order': order}
+    guard = None
+    if order is not None:
+        a, mr = float(tri.get('alpha', 0.01)), float(tri.get('min_ratio', 2.0))
+        sd = order[0]
+        strong = [v for k, v in tri['pairs'].items() if all(n.endswith('_' + sd) for n in k.split(' x '))]
+        if min(S.values()) <= 0:
+            guard = 'weaker trio median corr <= 0'
+        elif not all(_agrees(v, a, mr) for v in strong):
+            guard = 'stronger trio does not all agree'
+        if guard:
+            order = None
+    return {'S_forward': S['f'], 'S_reverse': S['r'], 'ratio': ratio, 'threshold': threshold, 'order': order,
+            'guard': guard}
 
 
 def run_local(target, others, floor, mask, win, out_npz):
