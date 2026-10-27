@@ -65,6 +65,50 @@ a sealed result):*
   checks and the report also pass on Windows and macOS (CI on synthetic segments, every push); the end-to-end demo needs
   `vc_render_tifxyz` and a CUDA GPU.
 
+## On scrolls with no labels
+
+Usage examples, not evidence: with no labels there is no right answer to score. Five segments of five scrolls that,
+as far as the checkpoints' own configs show (`scripts/onde_treino.py`), none of the three models was trained on:
+PHerc1447 w062 from Youssef Nader's public release (the unlabelled neighbour of the HELDOUT3 test segment), and four
+meshes from the public [mesh package](https://github.com/pscamillo/vesuvius-eligible-meshes). After PHerc0800, one mesh per scroll was picked by a rule written
+before running: among the meshes judged good, the one whose ink_9um map changes most when the layer order flips
+(`scripts/escolhe_exemplo.py`, ranking in `docs/examples/escolha_exemplo.json`). Then `demo_unlabelled.py`, unchanged.
+
+| scroll, mesh | layer order | what the kit says |
+|---|---|---|
+| PHerc1447 w062, with v8-in as a 4th model | **geometry rule: reverse** (CT match 0.82), before any model ran | **Look closer**, but the closest to "ink": all four models agree in that order and barely in the other (19%); Reader v2/V3 have 1 of 278 and 2 of 423 windows unsupported; ink_9um and v8-in have too few strokes above their floors to judge (12 and 14 windows), so the kit does not call it |
+| PHerc0813 z13696_w020 | rule abstained (CT match 0.40); both orders equally strong (ratio 1.04) | **no verdict**: it stops before the report |
+| PHerc0125 z6944_w020 | rule abstained (CT match 0.15); tie-break: forward (1.34) | **Look closer**: the maps read in the other order agree with the chosen ones just as much (120%), so what the models share here does not depend on the order: texture more than ink |
+| PHerc0211 z5520_w020 | rule abstained (CT match 0.35); tie-break: forward (1.28) | **Look closer**: Reader v2/V3 strokes fade when the order flips, as ink does, but 8–9% of their windows are not backed by the other models and ink_9um sees almost nothing |
+| PHerc0800 z5664_w020 | rule abstained (CT match 0.46); no group of maps in one order (before the tie-break) | **No ink signal here** |
+
+None of the five says "consistent with real ink". On scrolls the models were not trained on, that is the honest
+answer: the kit says what it can see and stops where it cannot. On w062 it gets closest, and what holds it back is
+written in the report.
+
+![report on PHerc1447 w062, no labels, four models](figures/example_w062.png)
+
+*PHerc1447 w062, read in the order the geometry chose before any model ran. v8-in, of another architecture, agrees
+with the three villa models (9× to 20× the block-shuffle null maximum). With v8-in as a fourth map, Reader v2/V3 are almost
+fully backed; with the three villa maps only (RESULT_HELDOUT3) they were at 4.3% and 5.3%. These maps are the ones
+the sealed HELDOUT3 run made; w062 has no labels.*
+
+![report on PHerc0211, no labels](figures/example_0211.png)
+
+*PHerc0211 z5520_w020: two related models see something that depends on depth, the third sees nothing, and about
+one window in eleven is not backed by the others. "Look closer" is the right verdict for that.*
+
+`demo_unlabelled.py` on a public mesh of PHerc0800 (z5664, w020; an illustrative run): the layer-order rule abstained (CT match 0.46,
+below 0.5), and with the order unknown the triangle found no group of maps that agree in one order only. The
+report says so instead of guessing:
+
+![report, no ink signal](figures/report_noink.png)
+
+*"No ink signal here" is a result, not a failure: on this segment the kit cannot tell ink from what the models
+would draw anyway. (This run predates the tie-break and was not rerun. With no order decided, that earlier demo
+still drew the report with the stored layers reversed, so its header reads "layer order checked: reverse"; neither
+order was supported. The current demo stops there instead.)*
+
 ## Possible next steps
 
 Directions, not promises: none of these is tested yet.
@@ -82,40 +126,6 @@ Directions, not promises: none of these is tested yet.
   model is the obvious next try.
 - **Depth.** Real ink fades more than model-made strokes when the layer order is flipped on one test set (AUC 0.76)
   but not on another (0.646, below the sealed 0.65 bar); shown in the report, not used for a verdict.
-
-## On scrolls with no labels
-
-Usage examples, not evidence: with no labels there is no right answer to score. Four segments of four scrolls, all
-from the public [mesh package](https://github.com/pscamillo/vesuvius-eligible-meshes), on scrolls that, as far as
-the checkpoints' own configs show (`scripts/onde_treino.py`), none of the three models was trained on. After PHerc0800, one mesh per scroll was picked by a rule written
-before running: among the meshes judged good, the one whose ink_9um map changes most when the layer order flips
-(`scripts/escolhe_exemplo.py`, ranking in `docs/examples/escolha_exemplo.json`). Then `demo_unlabelled.py`, unchanged.
-
-| scroll, mesh | layer order | what the kit says |
-|---|---|---|
-| PHerc0813 z13696_w020 | rule abstained (CT match 0.40); both orders equally strong (ratio 1.04) | **no verdict**: it stops before the report |
-| PHerc0125 z6944_w020 | rule abstained (CT match 0.15); tie-break: forward (1.34) | **Look closer**: the maps read in the other order agree with the chosen ones just as much (120%), so what the models share here does not depend on the order: texture more than ink |
-| PHerc0211 z5520_w020 | rule abstained (CT match 0.35); tie-break: forward (1.28) | **Look closer**: Reader v2/V3 strokes fade when the order flips, as ink does, but 8–9% of their windows are not backed by the other models and ink_9um sees almost nothing |
-| PHerc0800 z5664_w020 | rule abstained (CT match 0.46); no group of maps in one order (before the tie-break) | **No ink signal here** |
-
-None of the four says "consistent with real ink". On scrolls the models were not trained on, that is the honest
-answer: the kit says what it can see and stops where it cannot.
-
-![report on PHerc0211, no labels](figures/example_0211.png)
-
-*PHerc0211 z5520_w020: two related models see something that depends on depth, the third sees nothing, and about
-one window in eleven is not backed by the others. "Look closer" is the right verdict for that.*
-
-`demo_unlabelled.py` on a public mesh of PHerc0800 (z5664, w020; an illustrative run): the layer-order rule abstained (CT match 0.46,
-below 0.5), and with the order unknown the triangle found no group of maps that agree in one order only. The
-report says so instead of guessing:
-
-![report, no ink signal](figures/report_noink.png)
-
-*"No ink signal here" is a result, not a failure: on this segment the kit cannot tell ink from what the models
-would draw anyway. (This run predates the tie-break and was not rerun. With no order decided, that earlier demo
-still drew the report with the stored layers reversed, so its header reads "layer order checked: reverse"; neither
-order was supported. The current demo stops there instead.)*
 
 <details>
 <summary><b>Quick start</b></summary>
@@ -213,7 +223,7 @@ failures included. Each fix went into a new pre-registration on data the check h
 | 3 | V3 | PHerc1667 ×6 | order 18/18 PASS; triangle 6/6 PASS after the fix |
 | 4 | V4 | PHerc1667 ×6 | blind probes isolated 6/6; partial invented letters not caught at map level |
 | 5 | PARIS4 | PHercParis4 ×8 | order 24/24 PASS; triangle 8/8 PASS as printed, **2/8 FAIL** re-read (a printing bug hid wrong-order maps that agree with the whole core; NOTE_2026-10-27_TRIANGLE_REREAD); windows v10 FAIL (null bug: +inf) |
-| 6 | V11 (+ addendum) | 12 segments | windows v11: false alarm 1/851 PASS; no-null 0.4% PASS; invented letters 10/19 FAIL |
+| 6 | V11 (+ addendum) | 12 segments | windows v11: false alarm 1/851 PASS; no-null 0.4% PASS; invented-letter windows 10/19 FAIL |
 | 7 | V12 | PHercParis4 ×8 (blind) | windows v12: 4/4 PASS; v11 on the same data 3/3 PASS |
 | 8 | NATURAIS | PHercParis4 + 12 segments | natural hallucinations flagged 18× / 7.7× more than real ink: PASS, PASS |
 | 9 | DIRECAO | PHercParis4 + 12 segments | depth separates them: PASS (AUC 0.76) / FAIL (AUC 0.646) |
